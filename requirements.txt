@@ -1,9 +1,7 @@
 django
-gunicorn
-django-heroku
 xhtml2pdf
 python-decouple==3.1
 django-dajaxice
 django-dajax
 django-javascript-settings
-
+psycopg2-binary
