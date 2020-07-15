@@ -1,5 +1,5 @@
 from organisation_details.models import Department, Team, Position, OrganisationDetail
-from organisation_details.models import Department, Position, OrganisationDetail, Team
+from organisation_details.models import Department, Position, OrganisationDetail, Team, SalaryScale
 
 
 def get_all_departments():
@@ -66,3 +66,9 @@ def get_team_employees(team_id):
 
 def get_department_employees(department_id):
     return OrganisationDetail.objects.filter(department=department_id)
+
+def get_salary_scales():
+    return SalaryScale.objects.all()
+
+def get_salary_scale(scale_id):
+    return SalaryScale.objects.get(pk=scale_id)
