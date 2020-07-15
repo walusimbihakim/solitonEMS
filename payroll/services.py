@@ -2,14 +2,15 @@ from employees.models import Employee
 from employees.selectors import get_active_employees
 from payroll.simple_payslip import SimplePayslip
 from payroll.models import Payslip
-from payroll.procedures import get_total_non_statutory_deductions, get_overtime_pay
+from payroll.procedures import get_overtime_pay
 
 
-def create_payslip_list_service(payroll_record, bonus=None):
+def create_payslip_list_service(payroll_record):
     payslips = []
     employees = get_active_employees()
 
     for employee in employees:
+        bonus = employee.bonus
         overtime_pay = get_overtime_pay(employee)
         payslip = create_payslip_service(employee, payroll_record, bonus=bonus, overtime_pay=overtime_pay)
         payslips.append(payslip)
@@ -19,7 +20,6 @@ def create_payslip_list_service(payroll_record, bonus=None):
 
 def create_payslip_service(employee: object, payroll_record: object, overtime_pay: object = None,
                            bonus: object = None) -> object:
-
     simple_payslip = SimplePayslip(employee, overtime_pay=overtime_pay, bonus=bonus)
     payslip = Payslip.objects.create(
         employee=employee,
@@ -38,5 +38,3 @@ def create_payslip_service(employee: object, payroll_record: object, overtime_pa
     )
 
     return payslip
-
-
