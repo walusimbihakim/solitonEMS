@@ -1,15 +1,18 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.db import IntegrityError
 
-# Create your views here.
-from employees.models import Employee
 from employees.selectors import get_active_employees, get_employee
 from ems_admin.decorators import log_activity
+<<<<<<< HEAD
 from ems_auth.decorators import hr_required, ems_login_required, organisation_full_auth_required
 from organisation_details.models import Position, Department, Team, SalaryScale
 from organisation_details.selectors import get_all_departments, get_department, get_position, get_all_positions, get_all_teams, get_team, get_team_employees, get_department_employees, get_salary_scales, get_salary_scale
+=======
+from ems_auth.decorators import hr_required, ems_login_required
+from organisation_details.models import Position, Department, Team
+from organisation_details.selectors import get_all_departments, get_department, get_position, get_all_positions, \
+    get_all_teams, get_team, get_team_employees, get_department_employees
+>>>>>>> 8f55c9a1db209793f0bf89637a4f85c0a6bc5f83
 from settings.selectors import get_all_currencies, get_currency
 
 
@@ -107,7 +110,6 @@ def delete_team(request, team_id):
 
 # Department Section
 @hr_required
-@organisation_full_auth_required
 @log_activity
 def manage_departments_page(request):
     context = {
@@ -170,7 +172,6 @@ def edit_department_page(request, department_id):
     }
     return render(request, 'organisation_details/edit_department.html', context)
 
-        # return redirect(reverse('teams_page', kwargs={"id": team.department.id}))
 
 @log_activity
 def delete_department(request, department_id):
@@ -187,7 +188,6 @@ def delete_department(request, department_id):
 
 @ems_login_required
 @hr_required
-@organisation_full_auth_required
 @log_activity
 def manage_job_positions_page(request):
     context = {
