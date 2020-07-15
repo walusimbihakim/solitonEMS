@@ -235,6 +235,8 @@ def edit_job_position_page(request, position_id):
     context = {
         "user": request.user,
         "position": position,
+        "scales": get_salary_scales(),
+        "currencies": get_all_currencies(),
         "organisation_page": "active"
 
     }
@@ -253,7 +255,7 @@ def edit_job_position(request):
     position.name = request.POST.get('name')
     position.number_of_slots = request.POST.get('number_of_slots')
     position.type = request.POST.get('type')
-    position.salary = request.POST.get('salary')
+    position.salary_scale = get_salary_scale(request.POST.get('salary'))
     position.currency = currency
     position.description = request.POST.get('description')
     position.save()
