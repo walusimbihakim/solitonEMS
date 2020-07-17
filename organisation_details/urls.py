@@ -29,4 +29,11 @@ urlpatterns = [
     path('edit_job_position/<int:position_id>', views.edit_job_position_page, name="edit_job_position_page"),
     path('edit_job_position/', views.edit_job_position, name="edit_job_position"),
     path('delete_job_position/<int:position_id>', views.delete_job_position, name="delete_job_position"),
+
+    # Salary Scales
+    path('manage_salary_scale/', views.manage_salary_scale_page, name="manage_salary_scale_page"),
+    path('add_new_salary_scale/', views.add_new_salary_scale, name="add_new_salary_scale"),
+    path('edit_salary_scale/<int:scale_id>', views.edit_salary_scale_page, name="edit_salary_scale_page"),
+    path('edit_salary_scale/', views.edit_salary_scale, name="edit_salary_scale"),
+    path('delete_salary_scale/<int:scale_id>', views.delete_salary_scale, name="delete_salary_scale"),
 ]
