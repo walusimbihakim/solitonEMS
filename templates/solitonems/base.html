@@ -298,6 +298,11 @@
 <script src="{% static 'assets/js/core/popper.min.js' %}"></script>
 <script src="{% static 'assets/js/core/bootstrap-material-design.min.js'%}"></script>
 <script src="{% static 'assets/js/plugins/perfect-scrollbar.jquery.min.js'%}"></script>
+
+<!--Datatables code-->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+
 <!-- Plugin for the momentJs  -->
 <script src="{% static 'assets/js/plugins/moment.min.js' %}"></script>
 <!--  Plugin for Sweet Alert -->
@@ -334,6 +339,8 @@
 <script src="{% static 'assets/js/plugins/bootstrap-notify.js' %}"></script>
 <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
 <script src="{% static 'assets/js/material-dashboard.js' %}" type="text/javascript"></script>
+
+
 
 <script>
     $(document).ready(function() {
@@ -507,14 +514,6 @@
     });
 
 
-
-
-
-
-
-
-
-
 </script>
 <!--    Popovers-->
 <script>
@@ -596,8 +595,12 @@
        });
 
     });
-
-
+</script>
+<!--Initialising datatables-->
+<script>
+    $(document).ready( function () {
+    $('#employees').DataTable();
+} );
 </script>
 
 </body>
