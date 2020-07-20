@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 
 from SOLITONEMS.settings import BASE_DIR
-from employees.selectors import get_employees_paid_in_usd, get_employees_paid_in_ugx
+from employees.selectors import get_employees_paid_in_usd, get_employees_paid_in_ugx, get_active_employees
 from ems_admin.decorators import log_activity
 from ems_auth.decorators import hr_required
 from ems_auth.models import SolitonUser
@@ -29,9 +29,20 @@ from .procedures import get_total_non_statutory_deductions, get_total_nssf, get_
 @log_activity
 def payroll_page(request):
     context = {
-        "payroll_page": "active"
+        "payroll_page": "active",
+
     }
     return render(request, 'payroll/payroll_page.html', context)
+
+
+@hr_required
+@log_activity
+def review_financial_info_page(request):
+    context = {
+        "payroll_page": "active",
+        "employees": get_active_employees()
+    }
+    return render(request, 'payroll/review_and_edit_financial_info.html', context)
 
 
 @hr_required
@@ -111,7 +122,7 @@ def payroll_record_page_usd(request, id):
         # Get all employees
         total_paye = get_total_paye(usd_payslips)
         total_nssf_contribution = get_total_nssf(usd_payslips)
-        total_paye_ugx=total_paye * usd_currency_cost
+        total_paye_ugx = total_paye * usd_currency_cost
         context = {
             "payroll_page": "active",
             "month": month,
@@ -122,11 +133,11 @@ def payroll_record_page_usd(request, id):
             "total_paye": total_paye,
             "total_gross_pay": get_total_gross_pay(usd_payslips),
             "total_basic_pay": get_total_basic_pay(usd_employees),
-           "total_net_pay": get_total_net_pay(usd_payslips),
-           "total_paye_ugx": total_paye_ugx,
-           "total_nssf_contribution_ugx": total_nssf_contribution * usd_currency_cost,
+            "total_net_pay": get_total_net_pay(usd_payslips),
+            "total_paye_ugx": total_paye_ugx,
+            "total_nssf_contribution_ugx": total_nssf_contribution * usd_currency_cost,
 
-         }
+        }
         return render(request, 'payroll/payroll_record_usd.html', context)
     else:
         return HttpResponseRedirect(reverse(payroll_record_page, args=[id]))
