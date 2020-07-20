@@ -13,6 +13,7 @@ urlpatterns = [
     path('payslip_page/<int:id>', views.payslip_page, name='payslip_page'),
     path('payslips/<int:payroll_record_id>/', views.payslips_page, name="payslips_page"),
     path('your_payslip', views.your_payslip_page, name="your_payslip"),
+    path('review_financial_info/', views.review_financial_info_page, name="review_financial_info"),
     # Processing
     path('add_period/', views.add_period, name="add_period"),
     path('delete_period/<int:id>/', views.delete_period, name="delete_period"),
