@@ -21,13 +21,18 @@ $(document).ready(function(){
             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal_add_period">
                 Create Period
             </button>
+            <a href="{%url 'review_financial_info'%}">
+                <button type="button" class="btn btn-outline">
+                    Review and Edit Financial Information
+                </button>
+            </a>
             <div class="card">
                 <div class="card-body">
                     {%if payroll_records%}
                     <div class="table-responsive">
-                        <div class="form-group "> 
+                        <div class="form-group ">
                             <i class="fas fa-search " aria-hidden="true"></i>
-                            <input id="search_input" type="text" class="form-control" placeholder="Search....">                      
+                            <input id="search_input" type="text" class="form-control" placeholder="Search....">
                         </div>
                         <table class="table">
                             <thead class="thead-dark">
