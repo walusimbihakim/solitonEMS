@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from employees.selectors import get_active_employees, get_employee
 from ems_admin.decorators import log_activity
-from ems_auth.decorators import ems_login_required,  hod_required, hr_required
+from ems_auth.decorators import ems_login_required, hod_required, hr_required
 from notification.services import create_notification
 from organisation_details.decorators import organisationdetail_required
 
@@ -116,7 +116,6 @@ def amend_overtime_application_page(request, overtime_application_id):
     return render(request, 'overtime/amend_overtime_application.html', context)
 
 
-
 @log_activity
 def pending_overtime_application_page(request, overtime_application_id):
     overtime_application = get_overtime_application(overtime_application_id)
@@ -165,6 +164,7 @@ def create_overtime_plan(request):
         applicant=hod
     )
     return HttpResponseRedirect(reverse(create_overtime_plan_page))
+
 
 @hod_required
 def add_overtime_schedule_page(request, overtime_plan_id):
@@ -236,3 +236,10 @@ def approve_overtime_plan(request, overtime_plan_id):
     else:
         messages.error(request, "You are not associated to any role on the system")
     return HttpResponseRedirect(reverse(approve_overtime_plans_page))
+
+
+def delete_overtime_application(request,id):
+    """Delete overtime application"""
+    overtime_application = get_overtime_application(id)
+    overtime_application.delete()
+    return HttpResponseRedirect(reverse(overtime_applications_page))
