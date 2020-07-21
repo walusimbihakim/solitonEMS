@@ -67,7 +67,7 @@ $(document).ready(function(){
                             <td>{{overtime_application.cfo_approval}}</td>
                             <td>{{overtime_application.ceo_approval}}</td>
                             <td>
-                                <a href="{%url 'delete_overtime_application' 1%}" class="btn btn-outline-danger"
+                                <a href="{%url 'delete_overtime_application' overtime_application.id%}" class="btn btn-outline-danger"
                                 >Delete</a>
                             </td>
                         </tr>
