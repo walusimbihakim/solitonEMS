@@ -46,6 +46,7 @@ $(document).ready(function(){
                         <th>HOD Approval</th>
                         <th>CFO Approval</th>
                         <th>CEO Approval</th>
+                        <th>Actions</th>
                         </thead>
                         <tbody id="overtime_application">
                         {%for overtime_application in overtime_applications%}
@@ -65,6 +66,10 @@ $(document).ready(function(){
                             <td>{{overtime_application.HOD_approval}}</td>
                             <td>{{overtime_application.cfo_approval}}</td>
                             <td>{{overtime_application.ceo_approval}}</td>
+                            <td>
+                                <a href="{%url 'delete_overtime_application' 1%}" class="btn btn-outline-danger"
+                                >Delete</a>
+                            </td>
                         </tr>
                         {% endfor %}
                         </tbody>
