@@ -28,3 +28,4 @@ def get_payroll_record(id):
 
 def get_payslips(payroll_record):
     return Payslip.objects.filter(payroll_record=payroll_record)
+
