@@ -4,11 +4,6 @@ import os
 
 from celery import Celery
 
-# set the default Django settings module for the 'celery' program.
-from celery.schedules import crontab
-from celery.task import periodic_task
-from celery.utils.log import get_task_logger
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'SOLITONEMS.settings')
 
 app = Celery('SOLITONEMS')
@@ -22,21 +17,3 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
 
-logger = get_task_logger(__name__)
-
-
-@app.task(bind=True)
-def debug_task(self):
-    print('Request: {0!r}'.format(self.request))
-
-
-@periodic_task(
-    run_every=(crontab(minute='*/1')),
-    name="task_save_latest_flickr_image",
-    ignore_result=True
-)
-def task_save_latest_flickr_image():
-    """
-    Saves latest image from Flickr
-    """
-    logger.info("Saved image from Flickr")
