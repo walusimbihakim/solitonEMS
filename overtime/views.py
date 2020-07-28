@@ -61,7 +61,7 @@ def apply_for_overtime_page(request):
         message = "You need to approve/reject overtime application from {}".format(applicant)
         create_notification("Overtime", message, [approver])
         approver = get_supervisor_user(applicant)
-        send_overtime_application_mail([approver], overtime_application)
+        # send_overtime_application_mail([approver], overtime_application)
         messages.success(request, "You have successfully submitted your overtime application")
         return HttpResponseRedirect(reverse('apply_for_overtime_page'))
 
