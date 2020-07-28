@@ -65,3 +65,7 @@ def get_recent_audit_trails(user_id):
 def get_all_recent_audit_trails():
     audit_trails = AuditTrail.objects.all().order_by('-id')
     return audit_trails
+
+
+def get_user_from_employee(employee):
+    return employee.solitonuser.user

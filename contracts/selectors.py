@@ -1,4 +1,5 @@
 from contracts.models import Contract
+import datetime
 
 
 def get_contract(contract_id):
@@ -20,3 +21,8 @@ def get_terminated_contracts():
 
 def get_employee_contracts(employee):
     return Contract.objects.filter(status="Active", employee=employee)
+
+
+def is_contract_expired(contract):
+    """Check if contract is expired"""
+    return contract.expiry_date > datetime.date.today()
