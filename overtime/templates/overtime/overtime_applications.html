@@ -35,7 +35,8 @@ $(document).ready(function(){
                         <thead class="thead-dark">
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Date</th>
+                        <th>Application Date</th>
+                        <th>Date of Work</th>
                         <th>Start Time</th>
                         <th>End Time</th>
                         <th>Description</th>
@@ -56,6 +57,7 @@ $(document).ready(function(){
                                 {{overtime_application.applicant.last_name}}
                             </td>
                             <td>{{ overtime_application.date }}</td>
+                            <td>{{overtime_application.date_of_work}}</td>
                             <td>{{ overtime_application.start_time }}</td>
                             <td>{{ overtime_application.end_time }}</td>
                             <td>{{ overtime_application.description }}</td>
