@@ -98,7 +98,7 @@
 			<td>2019/2020</td>
 			<td>Period: {{month}} - {{year}}</td>
 			<th colspan="2">Process Date: <br>{% now "jS F Y" %}</th>
-			<th>Currency: {{payslip.employee.currency}}</th>
+			<th>Currency: {{payslip.currency}}</th>
 		</tr>
 		<tr>
 			<td colspan="6"></td>
@@ -123,7 +123,7 @@
 		</tr>
 		<tr class="income-values">
 			<td colspan="2">Basic Salary</td>
-			<td>{{payslip.employee.basic_salary | currency_filter}}</td>
+			<td>{{payslip.basic_salary | currency_filter}}</td>
 			<td colspan="2">P.A.Y.E</td>
 			<td>{{payslip.paye | currency_filter}}</td>
 		</tr>
