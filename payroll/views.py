@@ -100,7 +100,7 @@ def payroll_record_page(request, id):
         "total_nssf_contribution": get_total_nssf(ugx_payslips),
         "total_paye": get_total_paye(ugx_payslips),
         "total_gross_pay": get_total_gross_pay(ugx_payslips),
-        "total_basic_pay": get_total_basic_pay(ugx_employees),
+        "total_basic_pay": get_total_basic_pay(ugx_payslips),
         "total_net_pay": get_total_net_pay(ugx_payslips),
     }
     return render(request, 'payroll/payroll_record.html', context)
@@ -132,7 +132,7 @@ def payroll_record_page_usd(request, id):
             "total_nssf_contribution": total_nssf_contribution,
             "total_paye": total_paye,
             "total_gross_pay": get_total_gross_pay(usd_payslips),
-            "total_basic_pay": get_total_basic_pay(usd_employees),
+            "total_basic_pay": get_total_basic_pay(usd_payslips),
             "total_net_pay": get_total_net_pay(usd_payslips),
             "total_paye_ugx": total_paye_ugx,
             "total_nssf_contribution_ugx": total_nssf_contribution * usd_currency_cost,

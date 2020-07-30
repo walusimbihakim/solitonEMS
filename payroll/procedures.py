@@ -17,14 +17,14 @@ def get_total_non_statutory_deductions(employee):
         return total_deduction
 
 
-def get_total_nssf(payrolls):
-    sum = payrolls.aggregate(Sum('total_nssf_contrib'))
+def get_total_nssf(payslips):
+    sum = payslips.aggregate(Sum('total_nssf_contrib'))
     total_nssf_contrib = sum['total_nssf_contrib__sum']
     return total_nssf_contrib
 
 
-def get_total_paye(payrolls):
-    sum = payrolls.aggregate(Sum('paye'))
+def get_total_paye(payslips):
+    sum = payslips.aggregate(Sum('paye'))
     paye = sum['paye__sum']
     return paye
 
@@ -35,8 +35,8 @@ def get_total_gross_pay(payrolls):
     return gross_salary
 
 
-def get_total_basic_pay(employees):
-    sum = employees.aggregate(Sum('basic_salary'))
+def get_total_basic_pay(payslips):
+    sum = payslips.aggregate(Sum('basic_salary'))
     basic_salary = sum['basic_salary__sum']
     return basic_salary
 

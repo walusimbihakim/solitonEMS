@@ -35,6 +35,7 @@ def create_payslip_service(employee: object, payroll_record: object, overtime_pa
         sacco_deduction=simple_payslip.sacco_deduction_amount,
         damage_deduction=simple_payslip.damage_deduction_amount,
         currency=employee.currency,
+        basic_salary=employee.basic_salary,
     )
 
     return payslip
