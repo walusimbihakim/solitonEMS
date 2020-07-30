@@ -1,7 +1,6 @@
 from django.db import models
 from employees.models import Employee
 
-
 # Create your models here.
 from settings.models import Currency
 
@@ -30,14 +29,10 @@ class Payslip(models.Model):
     prorate = models.CharField(max_length=20, default="0.0")
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE, default="")
     basic_salary = models.IntegerField(default=0)
-    currency_rate = models.IntegerField(max_length=10, default=0)
+    currency_rate = models.IntegerField(default=0)
 
     def __str__(self):
         return self.employee.first_name + " " + self.employee.last_name
-
-    # @property
-    # def basic_salary(self):
-    #     return self.employee.basic_salary
 
     @property
     def total_statutory(self):
@@ -49,11 +44,8 @@ class Payslip(models.Model):
         currency = float(self.currency.cost)
         return paye * currency
 
-
     @property
     def nssf_ugx(self):
         nssf = self.total_nssf_contrib
         currency = float(self.currency.cost)
         return nssf * currency
-
-
