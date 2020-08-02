@@ -1,4 +1,4 @@
-from contracts.models import Contract
+from contracts.models import Contract, Offence, Penalty
 import datetime
 
 
@@ -7,8 +7,21 @@ def get_contract(contract_id):
     return contract
 
 
+def get_penalty(penalty_id):
+    penalty = Penalty.objects.get(pk=penalty_id)
+    return penalty
+
+
 def get_all_contracts():
     return Contract.objects.all()
+
+
+def get_all_offences():
+    return Offence.objects.all()
+
+
+def get_all_penalties():
+    return Penalty.objects.all()
 
 
 def get_active_contracts():
