@@ -34,6 +34,7 @@ class Offence(models.Model):
     resolved = models.CharField(max_length=30)
     penalty = models.ForeignKey(Penalty, on_delete=models.CASCADE)
     description = models.TextField()
+    date = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
         return self.name

@@ -54,7 +54,7 @@ $(document).ready(function(){
                                 <td>{{offence.penalty}}</td>
                                 <td>{{offence.description}}</td>
                                 <td>{{offence.date}}</td>
-                                <td>Edit | Delete</td>
+                                <td><a href="{%url 'edit_offence_page' offence.id%}">Edit</a> | Delete</td>
                             </tr>
                             {% endfor %}
                             </tbody>

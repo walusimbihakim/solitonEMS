@@ -46,7 +46,7 @@ $(document).ready(function(){
                                 <td>{{penalty.id}}</td>
                                 <td>{{penalty.name}}</td>
                                 <td>{{penalty.description}}</td>
-                                <td>Edit | Delete</td>
+                                <td><a href="{%url 'edit_penalty_page' penalty.id%}">Edit</a> | Delete</td>
                             </tr>
                             {% endfor %}
                             </tbody>
@@ -63,7 +63,7 @@ $(document).ready(function(){
         </div>
 
 
-        <!-- Modal: modalAddNewEmployee -->
+        <!-- Modal: modalAddNew -->
         <div class="modal fade" id="modal_add_new_employee" tabindex="-1" role="dialog"
              aria-labelledby="exampleModalLabel"
              aria-hidden="true" style="overflow-y: auto !important">
@@ -95,7 +95,6 @@ $(document).ready(function(){
                         <button class="btn btn-danger" type="submit">Save</button>
                     </div>
                     </form>
-
                 </div>
             </div>
         </div>

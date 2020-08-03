@@ -12,6 +12,11 @@ def get_penalty(penalty_id):
     return penalty
 
 
+def get_offence(offence_id):
+    offence = Offence.objects.get(pk=offence_id)
+    return offence
+
+
 def get_all_contracts():
     return Contract.objects.all()
 
