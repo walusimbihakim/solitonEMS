@@ -37,4 +37,14 @@ def send_employee_notification_on_contract_expiry(contract):
     return True
 
 
+def send_notification_generic(employee, title, message):
+    employee_user = employee.solitonuser.user
 
+    # Send alert
+    create_notification(
+        title,
+        message,
+        [employee_user]
+    )
+
+    return True
