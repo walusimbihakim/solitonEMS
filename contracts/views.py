@@ -4,12 +4,15 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from contracts.models import Contract
-from contracts.selectors import get_contract, get_terminated_contracts, get_active_contracts, get_employee_contracts
+from contracts.models import Contract, Penalty, Offence
+from contracts.selectors import get_contract, get_terminated_contracts, get_active_contracts, get_employee_contracts, \
+    get_all_offences, get_all_penalties, get_penalty, get_offence
 from contracts.services import activate, terminate
+from employees.procedures import send_notification
 from employees.selectors import get_employee, get_active_employees
 from ems_admin.decorators import log_activity
 from ems_auth.decorators import hr_required
+from notification.services import send_notification_generic
 from organisation_details.selectors import get_position, get_all_positions
 
 
@@ -63,6 +66,7 @@ def terminate_contract(request, contract_id):
     return HttpResponseRedirect(reverse(manage_job_contracts))
 
 
+@hr_required
 @log_activity
 def edit_contract_page(request, contract_id):
     if request.POST and request.FILES:
@@ -135,3 +139,140 @@ def user_contracts_page(request):
     }
 
     return render(request, 'contracts/user_contracts.html', context)
+
+
+@hr_required
+@log_activity
+def manage_offences_page(request):
+    if request.POST:
+        name = request.POST.get('name')
+        employee_id = request.POST.get('employee')
+        penalty_id = request.POST.get('penalty')
+        resolved = request.POST.get('resolved')
+        description = request.POST.get('description')
+        penalty = get_penalty(penalty_id)
+        employee = get_employee(employee_id)
+        try:
+            new_offence = Offence.objects.create(
+                name=name,
+                penalty=penalty,
+                employee=employee,
+                resolved=resolved,
+                description=description
+            )
+
+            send_notification_generic(employee, "Offence Recorded", "You have a new offence recorded")
+        except IntegrityError:
+            messages.warning(request, "Integrity problems with trying to add a new offence")
+
+        return HttpResponseRedirect(reverse(manage_offences_page))
+
+    offences = get_all_offences()
+    employees = get_active_employees()
+    penalties = get_all_penalties()
+    context = {
+        "contracts_page": "active",
+        "employees": employees,
+        "offences": offences,
+        "penalties": penalties
+    }
+    return render(request, 'contracts/manage_offences.html', context)
+
+
+@hr_required
+@log_activity
+def edit_offence_page(request, offence_id):
+    if request.POST:
+        name = request.POST.get('name')
+        employee_id = request.POST.get('employee')
+        penalty_id = request.POST.get('penalty')
+        resolved = request.POST.get('resolved')
+        description = request.POST.get('description')
+        penalty = get_penalty(penalty_id)
+        employee = get_employee(employee_id)
+
+        offence_list = Offence.objects.filter(id=offence_id)
+        offence_list.update(
+            name=name,
+            penalty=penalty,
+            employee=employee,
+            resolved=resolved,
+            description=description
+        )
+
+        return HttpResponseRedirect(reverse(manage_offences_page))
+
+    offence = get_offence(offence_id)
+    offences = get_all_offences()
+    employees = get_active_employees()
+    penalties = get_all_penalties()
+    context = {
+        "contracts_page": "active",
+        "employees": employees,
+        "offences": offences,
+        "penalties": penalties,
+        "offence": offence
+    }
+    return render(request, 'contracts/edit_offence.html', context)
+
+
+@hr_required
+@log_activity
+def delete_offence(request, offence_id):
+    offence = get_offence(offence_id)
+    offence.delete()
+    return HttpResponseRedirect(reverse(manage_offences_page))
+
+
+@hr_required
+@log_activity
+def manage_penalties_page(request):
+    if request.POST:
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        try:
+            new_penalty = Penalty.objects.create(
+                name=name,
+                description=description
+            )
+
+        except IntegrityError:
+            messages.warning(request, "There integrity problems while adding new penalty")
+
+        return HttpResponseRedirect(reverse(manage_penalties_page))
+
+    penalties = get_all_penalties()
+    context = {
+        "contracts_page": "active",
+        "penalties": penalties,
+    }
+    return render(request, 'contracts/manage_penalties.html', context)
+
+
+@hr_required
+@log_activity
+def edit_penalty_page(request, penalty_id):
+    if request.POST:
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        penalty_list = Penalty.objects.filter(id=penalty_id)
+        penalty_list.update(
+            name=name,
+            description=description
+        )
+        return HttpResponseRedirect(reverse(manage_penalties_page))
+
+    penalty = get_penalty(penalty_id)
+    context = {
+        "contracts_page": "active",
+        "penalty": penalty
+    }
+    return render(request, 'contracts/edit_penalty.html', context)
+
+
+@hr_required
+@log_activity
+def delete_penalty(request, penalty_id):
+    penalty = get_penalty(penalty_id)
+    penalty.delete()
+    return HttpResponseRedirect(reverse(manage_penalties_page))
