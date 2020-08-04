@@ -12,6 +12,8 @@ urlpatterns = [
     path("user_contracts_page", views.user_contracts_page, name="user_contracts_page"),
     path("manage_offences_page", views.manage_offences_page, name="manage_offences_page"),
     path("edit_offence_page/<int:offence_id>/", views.edit_offence_page, name="edit_offence_page"),
+    path("delete_offence/<int:offence_id>/", views.delete_offence, name="delete_offence"),
     path("manage_penalties_page", views.manage_penalties_page, name="manage_penalties_page"),
     path("edit_penalty_page/<int:penalty_id>/", views.edit_penalty_page, name="edit_penalty_page"),
+    path("delete_penalty/<int:penalty_id>/", views.delete_penalty, name="delete_penalty"),
 ]

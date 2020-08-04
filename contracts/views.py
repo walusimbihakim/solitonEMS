@@ -218,6 +218,14 @@ def edit_offence_page(request, offence_id):
 
 @hr_required
 @log_activity
+def delete_offence(request, offence_id):
+    offence = get_offence(offence_id)
+    offence.delete()
+    return HttpResponseRedirect(reverse(manage_offences_page))
+
+
+@hr_required
+@log_activity
 def manage_penalties_page(request):
     if request.POST:
         name = request.POST.get('name')
@@ -231,7 +239,7 @@ def manage_penalties_page(request):
         except IntegrityError:
             messages.warning(request, "There integrity problems while adding new penalty")
 
-        return HttpResponseRedirect(reverse(manage_penalties))
+        return HttpResponseRedirect(reverse(manage_penalties_page))
 
     penalties = get_all_penalties()
     context = {
@@ -244,7 +252,6 @@ def manage_penalties_page(request):
 @hr_required
 @log_activity
 def edit_penalty_page(request, penalty_id):
-    print(penalty_id)
     if request.POST:
         name = request.POST.get('name')
         description = request.POST.get('description')
@@ -261,3 +268,11 @@ def edit_penalty_page(request, penalty_id):
         "penalty": penalty
     }
     return render(request, 'contracts/edit_penalty.html', context)
+
+
+@hr_required
+@log_activity
+def delete_penalty(request, penalty_id):
+    penalty = get_penalty(penalty_id)
+    penalty.delete()
+    return HttpResponseRedirect(reverse(manage_penalties_page))
