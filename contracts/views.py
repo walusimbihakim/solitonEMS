@@ -4,9 +4,9 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from contracts.models import Contract, Penalty, Offence
+from contracts.models import Contract, Penalty, Offence, Termination
 from contracts.selectors import get_contract, get_terminated_contracts, get_active_contracts, get_employee_contracts, \
-    get_all_offences, get_all_penalties, get_penalty, get_offence
+    get_all_offences, get_all_penalties, get_penalty, get_offence, get_all_terminations, get_termination
 from contracts.services import activate, terminate
 from employees.procedures import send_notification
 from employees.selectors import get_employee, get_active_employees
@@ -276,3 +276,82 @@ def delete_penalty(request, penalty_id):
     penalty = get_penalty(penalty_id)
     penalty.delete()
     return HttpResponseRedirect(reverse(manage_penalties_page))
+
+
+@hr_required
+@log_activity
+def manage_terminations_page(request):
+    if request.POST:
+        employee_id = request.POST.get('employee')
+        type = request.POST.get('type')
+        termination_letter = request.FILES.get('termination_letter')
+        clearance_form = request.FILES.get('clearance_form')
+        description = request.POST.get('description')
+        employee = get_employee(employee_id)
+
+        try:
+            new_termination = Termination.objects.create(
+                employee=employee,
+                type=type,
+                termination_letter=termination_letter,
+                clearance_form=clearance_form,
+                description=description
+            )
+            send_notification_generic(employee, "Termination Recorded", "Your termination record has been created")
+        except IntegrityError:
+            messages.warning(request, "Integrity problems with trying to add a new offence")
+
+        return HttpResponseRedirect(reverse(manage_terminations_page))
+
+    terminations = get_all_terminations()
+    employees = get_active_employees()
+    context = {
+        "contracts_page": "active",
+        "employees": employees,
+        "terminations": terminations,
+    }
+    return render(request, 'contracts/manage_terminations.html', context)
+
+
+@hr_required
+@log_activity
+def edit_termination_page(request, termination_id):
+    if request.POST and request.FILES:
+        employee_id = request.POST.get('employee')
+        type = request.POST.get('type')
+        termination_letter = request.FILES.get('termination_letter')
+        clearance_form = request.FILES.get('clearance_form')
+        description = request.POST.get('description')
+        employee = get_employee(employee_id)
+        termination_list = Termination.objects.filter(id=termination_id)
+
+        try:
+            termination_list.update(
+                employee=employee,
+                type=type,
+                termination_letter=termination_letter,
+                clearance_form=clearance_form,
+                description=description
+            )
+            return HttpResponseRedirect(reverse(manage_terminations_page))
+        except IntegrityError:
+            messages.warning(request, "Integrity problems with trying to add a new offence")
+
+    termination = get_termination(termination_id)
+    terminations = get_all_terminations()
+    employees = get_active_employees()
+    context = {
+        "contracts_page": "active",
+        "termination": termination,
+        "terminations": terminations,
+        "employees": employees
+    }
+    return render(request, 'contracts/edit_termination.html', context)
+
+
+@hr_required
+@log_activity
+def delete_termination(request, termination_id):
+    termination = get_termination(termination_id)
+    termination.delete()
+    return HttpResponseRedirect(reverse(manage_terminations_page))
