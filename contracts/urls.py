@@ -16,4 +16,7 @@ urlpatterns = [
     path("manage_penalties_page", views.manage_penalties_page, name="manage_penalties_page"),
     path("edit_penalty_page/<int:penalty_id>/", views.edit_penalty_page, name="edit_penalty_page"),
     path("delete_penalty/<int:penalty_id>/", views.delete_penalty, name="delete_penalty"),
+    path("manage_terminations_page", views.manage_terminations_page, name="manage_terminations_page"),
+    path("edit_termination/<int:termination_id>/", views.edit_termination_page, name="edit_termination_page"),
+    path("delete_termination/<int:termination_id>/", views.delete_termination, name="delete_termination"),
 ]

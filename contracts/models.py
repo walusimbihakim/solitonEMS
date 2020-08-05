@@ -38,3 +38,15 @@ class Offence(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Termination(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    type = models.CharField(max_length=20)
+    termination_letter = models.FileField(upload_to="termination_letters", blank=True)
+    clearance_form = models.FileField(upload_to="termination_forms", blank=True)
+    date = models.DateTimeField(auto_now_add=True, blank=True)
+    description = models.TextField()
+
+    def __str(self):
+        return self.employee
