@@ -1,35 +1,41 @@
 from django.contrib.auth import get_user_model
 import datetime
 
-from .models import LeaveApplication, Leave_Records, Leave_Types
-
+from .models import LeaveApplication, Leave_Records, Leave_Types, LeavePlan
 
 user = get_user_model()
+
 
 # Leave Type Selectors
 def get_all_leave_types():
     return Leave_Types.objects.all()
 
+
 def get_leave_type(leave_type_id):
     return Leave_Types.objects.get(pk=leave_type_id)
+
 
 # Leave Records Selectors
 def get_all_leave_records():
     return Leave_Records.objects.all()
 
+
 def get_leave_record(employee):
     try:
         leave_record = Leave_Records.objects.get(employee=employee, leave_year=datetime.date.today().year)
-        return leave_record 
+        return leave_record
     except:
         return None
+
 
 # Leave Application Selectors
 def get_all_leave_applications():
     return LeaveApplication.objects.all()
 
+
 def get_employee_leave_applications(employee):
     return LeaveApplication.objects.filter(employee=employee)
+
 
 def get_leave_application(leave_application_id):
     return LeaveApplication.objects.get(pk=leave_application_id)
@@ -46,6 +52,7 @@ def get_supervisor_users(applicant):
 
     return users
 
+
 def get_hod_users(applicant):
     department = applicant.department
 
@@ -57,6 +64,11 @@ def get_hod_users(applicant):
 
     return users
 
+
 def get_hr_users():
     all_hr_users = user.objects.filter(is_hr=True)
     return all_hr_users
+
+
+def get_recent_leave_plans(limit, employee):
+    return LeavePlan.objects.filter(employee=employee).order_by('-id')[:limit]
