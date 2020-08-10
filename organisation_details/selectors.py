@@ -61,14 +61,20 @@ def get_is_hod_in_department(approver):
     department = get_department_instance(employee)
     return employee.id is department.hod.id
 
+
 def get_team_employees(team_id):
     return OrganisationDetail.objects.filter(team=team_id)
+
 
 def get_department_employees(department_id):
     return OrganisationDetail.objects.filter(department=department_id)
 
+
 def get_salary_scales():
     return SalaryScale.objects.all()
 
+
 def get_salary_scale(scale_id):
     return SalaryScale.objects.get(pk=scale_id)
+
+

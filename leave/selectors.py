@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 import datetime
 
+from organisation_details.selectors import get_department_instance
 from .models import LeaveApplication, Leave_Records, Leave_Types, LeavePlan
 
 user = get_user_model()
@@ -72,3 +73,19 @@ def get_hr_users():
 
 def get_recent_leave_plans(limit, employee):
     return LeavePlan.objects.filter(employee=employee).order_by('-id')[:limit]
+
+
+def get_hod_pending_leave_plans(hod):
+    pending_leave_plans = LeavePlan.objects.filter(approval_status="Pending")
+    hod_department = get_department_instance(hod)
+    hod_pending_applications = []
+    for pending_leave_plan in pending_leave_plans:
+        applicant = pending_leave_plan.employee
+        applicant_department = get_department_instance(applicant)
+        if applicant_department.id is hod_department.id:
+            hod_pending_applications.append(pending_leave_plan)
+    return hod_pending_applications
+
+
+def get_leave_plan(id):
+    return LeavePlan.objects.get(id=id)

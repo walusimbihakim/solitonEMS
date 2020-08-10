@@ -42,7 +42,6 @@ def send_leave_response_email(leave_application, approver, status, domain=None):
 
 
 def get_number_of_days_without_public_holidays(start_date, end_date):
-    date_format = "%Y-%m-%d"
     from_date = start_date
     to_date = end_date
     date_difference = to_date - from_date
@@ -64,3 +63,6 @@ def get_number_of_days_without_public_holidays(start_date, end_date):
 
     no_of_days = all_days_between - public_days
     return no_of_days
+
+
+

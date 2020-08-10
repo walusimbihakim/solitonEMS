@@ -65,12 +65,25 @@ class annual_planner(models.Model):
 
 
 class LeavePlan(models.Model):
+    PENDING = 'Pending'
+    APPROVED = 'Approved'
+    REJECTED = 'Rejected'
+
+    APPROVAL_CHOICES = [
+        (PENDING, 'Pending'),
+        (APPROVED, 'Approved'),
+        (REJECTED, 'Rejected'),
+    ]
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
     plan_date = models.DateField(default=timezone.now)
     description = models.TextField(blank=True)
-    approval_status = models.BooleanField(default=False)
+    approval_status = models.CharField(
+        max_length=8,
+        choices=APPROVAL_CHOICES,
+        default=PENDING,
+    )
 
     @property
     def no_of_days(self):

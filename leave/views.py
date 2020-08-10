@@ -1,31 +1,19 @@
-from django.conf import settings
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.core.mail import send_mail
-from django.http import JsonResponse, HttpResponseRedirect
-import json
-from django.contrib.auth.decorators import login_required
 import datetime
 from calendar import HTMLCalendar
 from collections import namedtuple
 
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db import connection, IntegrityError
+from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from employees.models import Employee
-from django.db import connection, IntegrityError
-
+from ems_admin.decorators import log_activity
 from ems_auth.decorators import ems_login_required, hr_required
-from organisation_details.decorators import organisationdetail_required
-from organisation_details.models import (
-    Department,
-    Team)
-from .models import (
-    Leave_Types,
-    LeaveApplication,
-    annual_planner,
-    Leave_Records,
-    LeavePlan)
-from leave.services import send_leave_application_email, send_leave_response_email
+from holidays.models import Holiday
+from leave.decorators import leave_record_required
 from leave.selectors import (
     get_leave_type,
     get_supervisor_users,
@@ -33,13 +21,20 @@ from leave.selectors import (
     get_hr_users,
     get_employee_leave_applications,
     get_leave_record,
-    get_recent_leave_plans)
-from leave.decorators import leave_record_required
-
-from holidays.models import Holiday
-from ems_admin.decorators import log_activity
-from organisation_details.selectors import get_organisationdetail
+    get_recent_leave_plans, get_hod_pending_leave_plans, get_leave_plan)
+from leave.services import send_leave_application_email, send_leave_response_email
 from notification.services import create_notification
+from organisation_details.decorators import organisationdetail_required
+from organisation_details.models import (
+    Department,
+    Team)
+from organisation_details.selectors import get_organisationdetail
+from .models import (
+    Leave_Types,
+    LeaveApplication,
+    annual_planner,
+    Leave_Records,
+    LeavePlan)
 
 
 @login_required
@@ -837,11 +832,33 @@ def create_leave_plan_page(request):
 @login_required
 @organisationdetail_required
 def approve_leave_plan_page(request):
+    hod = request.user.solitonuser.employee
+    leave_plans = get_hod_pending_leave_plans(hod)
     context = {
-        "leave_plans": "",
+        "leave_plans": leave_plans,
         "leave_page": "active"
     }
     return render(request, "leave/approve_leave_plans.html", context)
+
+
+@login_required
+@organisationdetail_required
+def approve_leave_plan(request, id):
+    leave_plan = get_leave_plan(id=id)
+    leave_plan.approval_status = "Approved"
+    leave_plan.save()
+    messages.warning(request, f'Leave plan approved')
+    return HttpResponseRedirect(reverse(approve_leave_plan_page))
+
+
+@login_required
+@organisationdetail_required
+def reject_leave_plan(request, id):
+    leave_plan = get_leave_plan(id=id)
+    leave_plan.approval_status = "Rejected"
+    leave_plan.save()
+    messages.warning(request, f'Leave plan rejected')
+    return HttpResponseRedirect(reverse(approve_leave_plan_page))
 
 
 @login_required

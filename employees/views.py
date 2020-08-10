@@ -31,13 +31,9 @@ from leave.models import Leave_Records
 from settings.models import Currency
 import csv
 
-# dashboard
-
-from .selectors import get_employee, get_active_employees
 from notification.selectors import get_user_notifications
 from .selectors import get_employee, get_active_employees, get_passive_employees, get_employee_contacts, get_contact
 from leave.selectors import get_leave_record
-
 
 
 @ems_login_required
@@ -47,10 +43,8 @@ def dashboard_page(request):
     # Get the user
     user = request.user
     try:
-        number_of_employees = Employee.objects.all().count()
         notifications = get_user_notifications(user)
         number_of_notifications = notifications.count()
-
         active_employees = get_active_employees()
         suspend_employees = get_passive_employees()
         number_of_employees = active_employees.count()
@@ -59,7 +53,6 @@ def dashboard_page(request):
             "user": user,
             "dashboard_page": "active",
             "number_of_employees": number_of_employees,
-
             "notifications": notifications,
             "number_of_notifications": number_of_notifications,
             "number_of_suspended": suspend_employees.count(),
@@ -1145,7 +1138,7 @@ def edit_leave_details(request):
         leave_record = get_leave_record(employee)
 
         if leave_record:
-            leave_record.entitlement=entitlement
+            leave_record.entitlement = entitlement
             leave_record.residue = residue
             leave_record.leave_applied = no_of_leaves
             leave_record.total_taken = total_taken
@@ -1154,13 +1147,13 @@ def edit_leave_details(request):
             leave_record.save()
         else:
             leave_record = Leave_Records(
-                employee=employee, 
-                leave_year=date.today().year, 
+                employee=employee,
+                leave_year=date.today().year,
                 entitlement=entitlement,
                 residue=residue, balance=balance,
-                leave_applied=no_of_leaves, 
+                leave_applied=no_of_leaves,
                 total_taken=total_taken
-                )
+            )
 
             leave_record.save()
 
@@ -1352,6 +1345,7 @@ def activate_employee(request, employee_id):
     messages.success(request, "Employee activated")
     return HttpResponseRedirect(reverse('activate_employees_page'))
 
+
 @log_activity
 def add_employee_contacts(request):
     if request.method == "POST":
@@ -1362,7 +1356,7 @@ def add_employee_contacts(request):
         employee = get_employee(employee_id)
 
         contact = Contacts(contact_type=contact_type, contact=contacts, employee=employee)
-        
+
         contact.save()
 
         messages.success(request, "Employee Contact Info saved Successfully")
@@ -1371,9 +1365,9 @@ def add_employee_contacts(request):
         # , 'redirect': "employee_page"
 
 
-def delete_employee_contact(request): 
+def delete_employee_contact(request):
     print("Jst Here")
-    contact_id = request.POST.get('contact_id') 
+    contact_id = request.POST.get('contact_id')
     contact = get_contact(contact_id)
     contact.delete()
 

@@ -16,6 +16,8 @@ urlpatterns = [
     path("leave_plans_page", views.leave_plans_page, name="leave_plans_page"),
 
     # Process
+    path("approve_leave_plan/<int:id>/", views.approve_leave_plan, name="approve_leave_plan"),
+    path("reject_leave_plan/<int:id>/", views.reject_leave_plan, name="reject_leave_plan"),
     path('add_new_type/', views.add_new_type, name="add_new_type"),
     path('edit_type/<int:id>/', views.edit_leave_type_page, name="edit_leave_type_page"),
     path('edit_leave_type/<int:id>/', views.edit_leave_type, name="edit_leave_type"),
