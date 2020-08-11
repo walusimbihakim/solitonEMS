@@ -885,3 +885,17 @@ def leave_plans_page(request):
         "approved_leave_plans": approved_leave_plans,
     }
     return render(request, "leave/leave_plans.html", context)
+
+
+@login_required
+@organisationdetail_required
+def month_leave_plans_page(request, month_id):
+    hod = request.user.solitonuser.employee
+    leave_plans = get_approved_leave_plans(hod,month_id)
+    context = {
+        "leave_page": "active",
+        "leave_plans": leave_plans
+    }
+    return render(request, "leave/month_leave_plans.html", context)
+
+

@@ -1,7 +1,5 @@
 from django.urls import path, reverse
 from . import views
-from django.contrib.auth import views as auth_views
-from django.conf.urls import url
 
 urlpatterns = [
     # Pages 
@@ -14,6 +12,7 @@ urlpatterns = [
     path("create_leave_plan_page", views.create_leave_plan_page, name="create_leave_plan_page"),
     path("approve_leave_plan_page", views.approve_leave_plan_page, name="approve_leave_plan_page"),
     path("leave_plans_page", views.leave_plans_page, name="leave_plans_page"),
+    path("month_leave_plans_page/<int:month_id>/", views.month_leave_plans_page, name="month_leave_plans_page"),
 
     # Process
     path("approve_leave_plan/<int:id>/", views.approve_leave_plan, name="approve_leave_plan"),
