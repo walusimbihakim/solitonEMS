@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 import datetime
 
+from employees.models import Employee
 from organisation_details.selectors import get_department_instance
 from .models import LeaveApplication, Leave_Records, Leave_Types, LeavePlan
 
@@ -89,3 +90,27 @@ def get_hod_pending_leave_plans(hod):
 
 def get_leave_plan(id):
     return LeavePlan.objects.get(id=id)
+
+
+def get_approved_leave_plans(hod: Employee, month: int):
+    approved_leave_plans = LeavePlan.objects.filter(approval_status="Approved", start_date__month=month)
+    hod_department = get_department_instance(hod)
+    hod_approved_applications = []
+    for approved_leave_plan in approved_leave_plans:
+        applicant = approved_leave_plan.employee
+        applicant_department = get_department_instance(applicant)
+        if applicant_department.id is hod_department.id:
+            hod_approved_applications.append(approved_leave_plan)
+    return hod_approved_applications
+
+
+def get_hod_approved_leave_plans(hod):
+    approved_leave_plans = LeavePlan.objects.filter(approval_status="Approved")
+    hod_department = get_department_instance(hod)
+    hod_approved_applications = []
+    for approved_leave_plan in approved_leave_plans:
+        applicant = approved_leave_plan.employee
+        applicant_department = get_department_instance(applicant)
+        if applicant_department.id is hod_department.id:
+            hod_approved_applications.append(approved_leave_plan)
+    return hod_approved_applications

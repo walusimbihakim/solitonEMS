@@ -21,7 +21,7 @@ from leave.selectors import (
     get_hr_users,
     get_employee_leave_applications,
     get_leave_record,
-    get_recent_leave_plans, get_hod_pending_leave_plans, get_leave_plan)
+    get_recent_leave_plans, get_hod_pending_leave_plans, get_leave_plan, get_approved_leave_plans)
 from leave.services import send_leave_application_email, send_leave_response_email
 from notification.services import create_notification
 from organisation_details.decorators import organisationdetail_required
@@ -864,8 +864,24 @@ def reject_leave_plan(request, id):
 @login_required
 @organisationdetail_required
 def leave_plans_page(request):
+    hod = request.user.solitonuser.employee
+    current_month = datetime.datetime.today().month
+    approved_leave_plans = get_approved_leave_plans(hod, month=current_month)
     context = {
         "leave_plans": "",
-        "leave_page": "active"
+        "leave_page": "active",
+        "january": len(get_approved_leave_plans(hod, 1)),
+        "february": len(get_approved_leave_plans(hod, 2)),
+        "march": len(get_approved_leave_plans(hod, 3)),
+        "april": len(get_approved_leave_plans(hod, 4)),
+        "may": len(get_approved_leave_plans(hod, 5)),
+        "june": len(get_approved_leave_plans(hod, 6)),
+        "july": len(get_approved_leave_plans(hod, 7)),
+        "august": len(get_approved_leave_plans(hod, 8)),
+        "september": len(get_approved_leave_plans(hod, 9)),
+        "october": len(get_approved_leave_plans(hod, 10)),
+        "november": len(get_approved_leave_plans(hod, 11)),
+        "december": len(get_approved_leave_plans(hod, 12)),
+        "approved_leave_plans": approved_leave_plans,
     }
     return render(request, "leave/leave_plans.html", context)

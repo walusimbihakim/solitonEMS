@@ -1,49 +1,81 @@
 {%extends 'solitonems/base.html'%}
 {%block page_title %}
-Leave Plans
+Approved Leave Plans
 {%endblock%}
-
 {%block content%}
 <div class="content">
     <div class="container-fluid">
         <div class="card animated fadeInUp">
             <div class="card-body">
                 <button type="button" class="btn btn-outline-primary">
-                    January <span class="badge badge-light">4</span>
+                    January <span class="badge badge-light">{{january}}</span>
                 </button>
                 <button type="button" class="btn btn-primary">
-                    February <span class="badge badge-light">4</span>
+                    February <span class="badge badge-light">{{february}}</span>
                 </button>
                 <button type="button" class="btn btn-outline-primary">
-                    March <span class="badge badge-light">4</span>
+                    March <span class="badge badge-light">{{march}}</span>
                 </button>
                 <button type="button" class="btn btn-primary">
-                    April <span class="badge badge-light">4</span>
+                    April <span class="badge badge-light">{{april}}</span>
                 </button>
                 <button type="button" class="btn btn-outline-primary">
-                    May <span class="badge badge-light">4</span>
+                    May <span class="badge badge-light">{{may}}</span>
                 </button>
                 <button type="button" class="btn btn-primary">
-                    June <span class="badge badge-light">4</span>
+                    June <span class="badge badge-light">{{june}}</span>
                 </button>
                 <button type="button" class="btn btn-outline-primary">
-                    July <span class="badge badge-light">4</span>
+                    July <span class="badge badge-light">{{july}}</span>
                 </button>
                 <button type="button" class="btn btn-primary">
-                    August <span class="badge badge-light">4</span>
+                    August <span class="badge badge-light">{{august}}</span>
                 </button>
                 <button type="button" class="btn btn-outline-primary">
-                    September <span class="badge badge-light">4</span>
+                    September <span class="badge badge-light">{{september}}</span>
                 </button>
                 <button type="button" class="btn btn-primary">
-                    October <span class="badge badge-light">4</span>
+                    October <span class="badge badge-light">{{october}}</span>
                 </button>
                 <button type="button" class="btn btn-outline-primary">
-                    November <span class="badge badge-light">4</span>
+                    November <span class="badge badge-light">{{november}}</span>
                 </button>
                 <button type="button" class="btn btn-primary">
-                    December <span class="badge badge-light">4</span>
+                    December <span class="badge badge-light">{{december}}</span>
                 </button>
+            </div>
+        </div>
+        <div class="card animated fadeInUp">
+            <div class="card-body">
+                {%if approved_leave_plans%}
+                <h3>Approved Leave Plans For Current Month</h3>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="thead-dark">
+                        <th>ID</th>
+                        <th>Employee</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>No. of Days</th>
+                        <th>Description</th>
+                        <th>Approval Status</th>
+                        </thead>
+                        {%for approved_leave_plan in approved_leave_plans%}
+                        <tr>
+                            <td>{{approved_leave_plan.id}}</td>
+                            <td>{{approved_leave_plan.employee}}</td>
+                            <td>{{approved_leave_plan.start_date}}</td>
+                            <td>{{approved_leave_plan.end_date}}</td>
+                            <td>{{approved_leave_plan.no_of_days}}</td>
+                            <td>{{approved_leave_plan.description}}</td>
+                            <td>{{approved_leave_plan.approval_status}}</td>
+                        </tr>
+                        {%endfor%}
+                    </table>
+                </div>
+                {%else%}
+                <h3>No Approved Leave Plans</h3>
+                {%endif%}
             </div>
         </div>
     </div>

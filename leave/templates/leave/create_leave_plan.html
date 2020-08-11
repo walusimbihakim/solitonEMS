@@ -46,6 +46,42 @@ Create your leave plan
                         </tr>
                         {%endfor%}
                     </table>
+                </div><div class="card animated fadeInUp">
+            <div class="card-body">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-warning">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <h3>Recent Leave Plans</h3>
+                {%if recent_leave_plans%}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="thead-dark">
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>No. of Days</th>
+                        <th>Description</th>
+                        <th>Approval Status</th>
+                        </thead>
+                        {%for recent_leave_plan in recent_leave_plans%}
+                        <tr>
+                            <td>{{recent_leave_plan.id}}</td>
+                            <td>{{recent_leave_plan.date}}</td>
+                            <td>{{recent_leave_plan.start_date}}</td>
+                            <td>{{recent_leave_plan.end_date}}</td>
+                            <td>{{recent_leave_plan.no_of_days}}</td>
+                            <td>{{recent_leave_plan.description}}</td>
+                            <td>{{recent_leave_plan.approval_status}}</td>
+                        </tr>
+                        {%endfor%}
+                    </table>
                 </div>
                 {%endif%}
             </div>
