@@ -66,3 +66,5 @@ class OvertimeSchedule(models.Model):
     date = models.DateField()
     number_of_hours = models.IntegerField(blank=True)
     description = models.TextField()
+
+

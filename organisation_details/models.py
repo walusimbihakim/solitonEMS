@@ -13,6 +13,7 @@ class Department(models.Model):
     def __str__(self):
         return self.name
 
+
 class SalaryScale(models.Model):
     level = models.CharField(max_length=20, null=False, unique=True)
     minimum = models.FloatField()
@@ -20,6 +21,7 @@ class SalaryScale(models.Model):
 
     def __str__(self):
         return self.level
+
 
 class Position(models.Model):
     name = models.CharField(max_length=45, unique=True)
@@ -51,5 +53,3 @@ class OrganisationDetail(models.Model):
 
     def __str__(self):
         return self.position.name + " " + self.department.name
-    
-    
