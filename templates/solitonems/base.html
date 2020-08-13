@@ -128,6 +128,19 @@
                     </a>
                 </li>
 
+                <li class="nav-item {{performance_page}}" data-toggle="popover-performance"
+                    title="Performance Management">
+                    <a class="nav-link" href="#">
+                        <i class="material-icons">done_all</i>
+                        <p>Performance Management</p>
+                    </a>
+                    <ul id="popover-performance" class="nav list-group" style="display:none">
+                        <a href="#" class="list-group-item">Manage Performance</a>
+                        <a href="#" class="list-group-item">View Performance</a>
+                        <a href="#" class="list-group-item">View Employee Performance</a>
+                    </ul>
+                </li>
+
                 <li class="nav-item {{recruitment_page}}" data-toggle="popover-recruitment" title="Recruitment">
                     <a class="nav-link" href="#">
                         <i class="material-icons">people</i>
@@ -572,6 +585,14 @@
             trigger: 'click',
             content: function() {
             return $('#popover-recruitment').html();
+          }
+       });
+
+        $('[data-toggle="popover-performance"]').popover({
+            html: true,
+            trigger: 'click',
+            content: function() {
+            return $('#popover-performance').html();
           }
        });
 
