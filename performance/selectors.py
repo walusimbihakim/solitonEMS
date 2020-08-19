@@ -11,3 +11,8 @@ def get_all_employee_kpi(employee):
 
 def get_department_kpi(id):
     return DepartmentKPI.objects.get(pk=id)
+
+
+def get_employee_kpi(id):
+    return EmployeeKPI.objects.get(pk=id)
+

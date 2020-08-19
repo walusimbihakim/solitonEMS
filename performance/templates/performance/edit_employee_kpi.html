@@ -1,6 +1,6 @@
 {% extends 'solitonems/base.html' %}
 {% block page_title %}
-Edit Department KPI
+Edit Employee KPI
 {% endblock %}
 
 {% block content %}
@@ -13,15 +13,15 @@ Edit Department KPI
                         {%csrf_token%}
                         <div class="form-group">
                             <label>Description</label>
-                            <textarea class="form-control" name="description">{{department_kpi.description}}</textarea>
+                            <textarea class="form-control" name="description">{{employee_kpi.description}}</textarea>
                         </div>
                         <div class="form-group">
                             <label>Weight</label>
-                            <input class="form-control" type="number" name="weight" value={{department_kpi.weight}} required/>
+                            <input class="form-control" type="number" name="weight" value={{employee_kpi.weight}} required/>
                         </div>
                         <div class="form-group">
                             <label>Score</label>
-                            <input class="form-control" type="number" name="score" value={{department_kpi.score}} value=0 required/>
+                            <input class="form-control" type="number" name="score" value={{employee_kpi.score}} value=0 required/>
                         </div>
 
                         <input type="submit" value="submit" class="btn btn-danger"/>
