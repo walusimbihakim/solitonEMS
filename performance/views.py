@@ -4,9 +4,10 @@ from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-from employees.selectors import get_employee
+from employees.selectors import get_employee, get_active_employees
 from ems_admin.decorators import log_activity
 from ems_auth.decorators import hod_required
+from organisation_details.decorators import organisationdetail_required
 from organisation_details.models import OrganisationDetail
 from performance.models import DepartmentKPI, EmployeeKPI
 from performance.selectors import get_all_department_kpi, get_department_kpi, get_all_employee_kpi, get_employee_kpi
@@ -160,3 +161,95 @@ def delete_employee_kpi(request, kpi_id):
     employee_kpi.delete()
     messages.warning(request, "Employee KPI deleted")
     return HttpResponseRedirect(reverse(manage_employee_kpi, args=[employee.id]))
+
+
+@hod_required
+@organisationdetail_required
+def manage_your_kpi(request):
+    employee = request.user.solitonuser.employee
+    employee_kpis = get_all_employee_kpi(employee=employee)
+    if request.POST:
+        description = request.POST.get("description")
+        weight = request.POST.get("weight")
+        score = request.POST.get("score")
+
+        if score > weight:
+            messages.warning(request, "Employee KPI added successfully")
+            return HttpResponseRedirect(reverse(manage_department_kpi))
+
+        try:
+            EmployeeKPI.objects.create(
+                description=description,
+                weight=weight,
+                score=score,
+                employee=employee,
+                assessor="Self"
+            )
+            messages.warning(request, "Your KPI added successfully")
+            return HttpResponseRedirect(reverse(manage_your_kpi))
+        except IntegrityError:
+            messages.warning(request, "Integrity problems with trying to add performance KPI")
+    context = {
+        "performance_page": "active",
+        "employee_kpis": employee_kpis,
+        "employee": employee,
+    }
+    return render(request, "performance/manage_your_kpi.html", context)
+
+
+def edit_your_kpi_page(request, kpi_id):
+    employee_kpi = get_employee_kpi(kpi_id)
+    if request.POST:
+        description = request.POST.get("description")
+        weight = request.POST.get("weight")
+        score = request.POST.get("score")
+        employee_kpi_list = EmployeeKPI.objects.filter(id=kpi_id)
+        try:
+            employee_kpi_list.update(
+                description=description,
+                weight=weight,
+                score=score,
+            )
+            messages.warning(request, "Your KPI updated")
+            return HttpResponseRedirect(reverse(manage_your_kpi))
+        except IntegrityError:
+            messages.warning(request, "Integrity problems with trying to edit performance KPI")
+
+    context = {
+        "performance_page": "active",
+        "employee_kpi": employee_kpi
+
+    }
+    return render(request, 'performance/edit_your_kpi.html', context)
+
+
+def delete_your_kpi(request, kpi_id):
+    employee_kpi = get_employee_kpi(kpi_id)
+    employee = employee_kpi.employee
+    employee_kpi.delete()
+    messages.warning(request, "Your KPI has been deleted")
+    return HttpResponseRedirect(reverse(manage_your_kpi))
+
+
+@hod_required
+def employees_performance_ratings_page(request):
+    employees = get_active_employees()
+    context = {
+        "performance_page": "active",
+        "employees": employees,
+    }
+    return render(request, "performance/employees_performance_rating.html", context)
+
+
+def employee_performance_ratings_page(request):
+    employee = request.user.solitonuser.employee
+    department = employee.organisationdetail.department
+    department_kpis = get_all_department_kpi(department)
+    employee_kpis = get_all_employee_kpi(employee=employee)
+    context = {
+        "performance_page": "active",
+        "employee": employee,
+        "employee_kpis": employee_kpis,
+        "department_kpis": department_kpis,
+    }
+    return render(request, "performance/employee_performance_ratings.html", context)

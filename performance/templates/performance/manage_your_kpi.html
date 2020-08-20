@@ -2,14 +2,14 @@
 {% load humanize %}
 {% load static %}
 {% block page_title %}
-Manage {{employee}} KPI
+Manage your KPI
 {% endblock %}
 
 {%block content%}
 <div class="content">
     <div class="container-fluid">
         <button class="btn btn-danger" data-toggle="modal"
-                data-target="#modal_apply_overtime">Create employee KPI</button>
+                data-target="#modal_apply_overtime">Create your KPI</button>
         <div class="card animated fadeInUp">
             <div class="card-body">
                 {% if messages %}
@@ -21,7 +21,7 @@ Manage {{employee}} KPI
                 {% endfor %}
                 {% endif %}
                 {%if employee_kpis%}
-                <h3>Employee Key Performance Indicators</h3>
+                <h3>Your Key Performance Indicators</h3>
                 <div class="table-responsive">
                     <table class="table">
                         <thead class="thead-dark">
@@ -38,8 +38,8 @@ Manage {{employee}} KPI
                             <td>{{employee_kpi.weight}}</td>
                             <td>{{employee_kpi.score}}</td>
                             <td>
-                                <a href="{%url 'edit_employee_kpi_page' employee_kpi.id%}">Edit</a> |
-                                <a href="{%url 'delete_employee_kpi' employee_kpi.id%}">Delete</a></td>
+                                <a href="{%url 'edit_your_kpi_page' employee_kpi.id%}">Edit</a> |
+                                <a href="{%url 'delete_your_kpi' employee_kpi.id%}">Delete</a></td>
                         </tr>
                         {%endfor%}
                     </table>
@@ -48,7 +48,6 @@ Manage {{employee}} KPI
                 <h3>No employee key performance indicators available</h3>
                 {%endif%}
             </div>
-
         </div>
 
         <!-- Modal: modalApplyOvertime -->
