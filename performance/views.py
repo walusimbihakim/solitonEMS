@@ -10,6 +10,7 @@ from ems_auth.decorators import hod_required
 from organisation_details.decorators import organisationdetail_required
 from organisation_details.models import OrganisationDetail
 from performance.models import DepartmentKPI, EmployeeKPI
+from performance.procedures import calculate_performance_rating
 from performance.selectors import get_all_department_kpi, get_department_kpi, get_all_employee_kpi, get_employee_kpi
 from django.shortcuts import render
 
@@ -246,10 +247,12 @@ def employee_performance_ratings_page(request):
     department = employee.organisationdetail.department
     department_kpis = get_all_department_kpi(department)
     employee_kpis = get_all_employee_kpi(employee=employee)
+    performance_rating = calculate_performance_rating(employee)
     context = {
         "performance_page": "active",
         "employee": employee,
         "employee_kpis": employee_kpis,
         "department_kpis": department_kpis,
+        "performance_rating": performance_rating
     }
     return render(request, "performance/employee_performance_ratings.html", context)

@@ -8,7 +8,7 @@ Employee Performance
     <div class="container-fluid">
         <div class="card">
             <div class="card-body">
-                <h3>Performance Rating - 0</h3>
+                <h3>Performance Rating - {{performance_rating}}</h3>
             </div>
         </div>
         <div class="row">
@@ -24,7 +24,7 @@ Employee Performance
                         {% endfor %}
                         {% endif %}
                         {%if department_kpis%}
-                        <h3>Department Key Performance Indicators</h3>
+                        <h4>Department Key Performance Indicators</h4>
                         <div class="table-responsive">
                             <table class="table">
                                 <thead class="thead-dark">
@@ -46,7 +46,7 @@ Employee Performance
                             </table>
                         </div>
                         {%else%}
-                        <h3>No department key performance indicators available</h3>
+                        <h4>No department key performance indicators available</h4>
                         {%endif%}
                     </div>
                 </div>
@@ -63,7 +63,7 @@ Employee Performance
                         {% endfor %}
                         {% endif %}
                         {%if employee_kpis%}
-                        <h3>Employee Key Performance Indicators</h3>
+                        <h4>Employee Key Performance Indicators</h4>
                         <div class="table-responsive">
                             <table class="table">
                                 <thead class="thead-dark">
