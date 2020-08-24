@@ -128,6 +128,21 @@
                     </a>
                 </li>
 
+                <li class="nav-item {{performance_page}}" data-toggle="popover-performance"
+                    title="Performance Management">
+                    <a class="nav-link" href="#">
+                        <i class="material-icons">done_all</i>
+                        <p>Performance Management</p>
+                    </a>
+                    <ul id="popover-performance" class="nav list-group" style="display:none">
+                        <a href="{%url 'manage_department_kpi_page'%}" class="list-group-item">Manage Department KPI</a>
+                        <a href="{%url 'manage_employees_kpi_page'%}" class="list-group-item">Manage Employee KPI</a>
+                        <a href="{%url 'manage_your_kpi_page'%}" class="list-group-item">Manage your KPI</a>
+                        <a href="{%url 'employees_performance_ratings_page'%}" class="list-group-item">View Employee Performance Rating</a>
+                        <a href="{%url 'employee_performance_ratings_page'%}" class="list-group-item">View your performance Rating</a>
+                    </ul>
+                </li>
+
                 <li class="nav-item {{recruitment_page}}" data-toggle="popover-recruitment" title="Recruitment">
                     <a class="nav-link" href="#">
                         <i class="material-icons">people</i>
@@ -572,6 +587,14 @@
             trigger: 'click',
             content: function() {
             return $('#popover-recruitment').html();
+          }
+       });
+
+        $('[data-toggle="popover-performance"]').popover({
+            html: true,
+            trigger: 'click',
+            content: function() {
+            return $('#popover-performance').html();
           }
        });
 
