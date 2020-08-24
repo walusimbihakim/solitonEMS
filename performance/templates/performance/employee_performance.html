@@ -26,7 +26,7 @@ Employee Performance
                     <table class="table">
                         <thead class="thead-dark">
                         <th>ID</th>
-                        <th>Description</th>
+                        <th>Measure of success</th>
                         <th>Weight</th>
                         <th>Score</th>
                         <th>Actions</th>
@@ -34,7 +34,7 @@ Employee Performance
                         {%for employee_kpi in employee_kpis%}
                         <tr>
                             <td>{{employee_kpi.id}}</td>
-                            <td>{{employee_kpi.description}}</td>
+                            <td>{{employee_kpi.measure_of_success}}</td>
                             <td>{{employee_kpi.weight}}</td>
                             <td>{{employee_kpi.score}}</td>
                             <td>
@@ -67,7 +67,7 @@ Employee Performance
                         <form method="post" action="#">
                             {%csrf_token%}
                             <div class="form-group">
-                                <label>Description</label>
+                                <label>Measure of success</label>
                                 <textarea class="form-control" name="description"></textarea>
                             </div>
                             <div class="form-group">

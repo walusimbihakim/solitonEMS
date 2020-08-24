@@ -27,7 +27,7 @@ Manage department KPI
                         <thead class="thead-dark">
                         <th>ID</th>
                         <th>Department</th>
-                        <th>Description</th>
+                        <th>Measure of success</th>
                         <th>Weight</th>
                         <th>Score</th>
                         <th>Actions</th>
@@ -36,7 +36,7 @@ Manage department KPI
                         <tr>
                             <td>{{department_kpi.id}}</td>
                             <td>{{department_kpi.department}}</td>
-                            <td>{{department_kpi.description}}</td>
+                            <td>{{department_kpi.measure_of_success}}</td>
                             <td>{{department_kpi.weight}}</td>
                             <td>{{department_kpi.score}}</td>
                             <td>
@@ -69,7 +69,7 @@ Manage department KPI
                         <form method="post" action="#">
                             {%csrf_token%}
                             <div class="form-group">
-                                <label>Description</label>
+                                <label>Measure of success</label>
                                 <textarea class="form-control" name="description"></textarea>
                             </div>
                             <div class="form-group">

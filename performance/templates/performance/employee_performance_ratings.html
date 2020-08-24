@@ -30,7 +30,7 @@ Employee Performance
                                 <thead class="thead-dark">
                                 <th>ID</th>
                                 <th>Department</th>
-                                <th>Description</th>
+                                <th>Measure of success</th>
                                 <th>Weight</th>
                                 <th>Score</th>
                                 </thead>
@@ -38,7 +38,7 @@ Employee Performance
                                 <tr>
                                     <td>{{department_kpi.id}}</td>
                                     <td>{{department_kpi.department}}</td>
-                                    <td>{{department_kpi.description}}</td>
+                                    <td>{{department_kpi.measure_of_success}}</td>
                                     <td>{{department_kpi.weight}}</td>
                                     <td>{{department_kpi.score}}</td>
                                 </tr>
@@ -68,14 +68,14 @@ Employee Performance
                             <table class="table">
                                 <thead class="thead-dark">
                                 <th>ID</th>
-                                <th>Description</th>
+                                <th>Measure of success</th>
                                 <th>Weight</th>
                                 <th>Score</th>
                                 </thead>
                                 {%for employee_kpi in employee_kpis%}
                                 <tr>
                                     <td>{{employee_kpi.id}}</td>
-                                    <td>{{employee_kpi.description}}</td>
+                                    <td>{{employee_kpi.measure_of_success}}</td>
                                     <td>{{employee_kpi.weight}}</td>
                                     <td>{{employee_kpi.score}}</td>
                                 </tr>
