@@ -26,7 +26,7 @@ Manage {{employee}} KPI
                     <table class="table">
                         <thead class="thead-dark">
                         <th>ID</th>
-                        <th>Description</th>
+                        <th>Measure of Success</th>
                         <th>Weight</th>
                         <th>Score</th>
                         <th>Actions</th>
@@ -34,7 +34,7 @@ Manage {{employee}} KPI
                         {%for employee_kpi in employee_kpis%}
                         <tr>
                             <td>{{employee_kpi.id}}</td>
-                            <td>{{employee_kpi.description}}</td>
+                            <td>{{employee_kpi.measure_of_success}}</td>
                             <td>{{employee_kpi.weight}}</td>
                             <td>{{employee_kpi.score}}</td>
                             <td>

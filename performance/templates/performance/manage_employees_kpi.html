@@ -1,6 +1,7 @@
 {%extends 'solitonems/base.html'%}
 {% load humanize %}
 {% load static %}
+{%load performance_tags%}
 {% block page_title %}
 Manage employee KPI
 {% endblock %}
@@ -26,6 +27,7 @@ Manage employee KPI
                         <th>ID</th>
                         <th>Employee</th>
                         <th>Position</th>
+                        <th>Performance Rating</th>
                         <th>Actions</th>
                         </thead>
                         {%for organisationdetail in organisationdetails%}
@@ -33,6 +35,7 @@ Manage employee KPI
                             <td>{{organisationdetail.id}}</td>
                             <td>{{organisationdetail.employee}}</td>
                             <td>{{organisationdetail.position}}</td>
+                            <td>{{organisationdetail.employee.id | performance_rating_filter}}</td>
                             <td>
                                 <a href="{%url 'manage_employee_kpi_page' organisationdetail.employee.id%}">Manage KPIs</a></td>
                         </tr>

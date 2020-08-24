@@ -1,6 +1,7 @@
 {%extends 'solitonems/base.html'%}
 {% load humanize %}
 {% load static %}
+{%load performance_tags%}
 {% block page_title %}
 Employees Performance
 {% endblock %}
@@ -33,7 +34,7 @@ Employees Performance
                             <td>{{employee.id}}</td>
                             <td>{{employee}}</td>
                             <td>{{employee.organisationdetail.position}}</td>
-                            <td>0</td>
+                            <td>{{employee.id | performance_rating_filter}}</td>
                             <td>{{organisationdetail.position}}</td>
                         </tr>
                         {%endfor%}
@@ -62,7 +63,7 @@ Employees Performance
                         <form method="post" action="#">
                             {%csrf_token%}
                             <div class="form-group">
-                                <label>Description</label>
+                                <label>Measure of Success</label>
                                 <textarea class="form-control" name="description"></textarea>
                             </div>
                             <div class="form-group">
