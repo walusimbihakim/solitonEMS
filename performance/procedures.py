@@ -24,11 +24,11 @@ def calculate_performance_rating(employee) -> int:
     employee_total_score = get_total_score(employee_kpis)
     employee_total_weight = get_total_weight(employee_kpis)
 
-    total_score = employee_total_score + department_total_score
-    total_weight = employee_total_weight + department_total_weight
-
     try:
+        total_score = employee_total_score + department_total_score
+        total_weight = employee_total_weight + department_total_weight
+
         performance_rating = (total_score / total_weight) * 100
-    except ZeroDivisionError:
+    except (ZeroDivisionError, TypeError):
         performance_rating = 0
     return int(performance_rating)  # Round off to the nearest integer

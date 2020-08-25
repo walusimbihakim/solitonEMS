@@ -1,4 +1,5 @@
 # Create your views here.
+
 from django.contrib import messages
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
@@ -22,7 +23,7 @@ def manage_department_kpi(request):
     department_kpis = get_all_department_kpi(department)
 
     if request.POST:
-        description = request.POST.get("description")
+        measure_of_success = request.POST.get("measure_of_success")
         weight = request.POST.get("weight")
         score = request.POST.get("score")
         try:
@@ -30,7 +31,7 @@ def manage_department_kpi(request):
                 messages.warning(request, "Department KPI added successfully")
                 return HttpResponseRedirect(reverse(manage_department_kpi))
             DepartmentKPI.objects.create(
-                measure_of_success=description,
+                measure_of_success=measure_of_success,
                 weight=weight,
                 score=score,
                 department=department,
@@ -53,13 +54,13 @@ def edit_performance_kpi_page(request, kpi_id):
     department_kpi = get_department_kpi(kpi_id)
 
     if request.POST:
-        description = request.POST.get("description")
+        measure_of_success = request.POST.get("measure_of_success")
         weight = request.POST.get("weight")
         score = request.POST.get("score")
         department_kpi_list = DepartmentKPI.objects.filter(id=kpi_id)
         try:
             department_kpi_list.update(
-                measure_of_success=description,
+                measure_of_success=measure_of_success,
                 weight=weight,
                 score=score,
             )
@@ -99,7 +100,7 @@ def manage_employee_kpi(request, employee_id):
     employee = get_employee(employee_id)
     employee_kpis = get_all_employee_kpi(employee=employee)
     if request.POST:
-        measure_of_success = request.POST.get("description")
+        measure_of_success = request.POST.get("measure_of_success")
         weight = request.POST.get("weight")
         score = request.POST.get("score")
 
@@ -109,7 +110,7 @@ def manage_employee_kpi(request, employee_id):
 
         try:
             EmployeeKPI.objects.create(
-                description=description,
+                measure_of_success=measure_of_success,
                 weight=weight,
                 score=score,
                 employee=employee,
@@ -132,13 +133,13 @@ def edit_employee_kpi_page(request, kpi_id):
     employee_kpi = get_employee_kpi(kpi_id)
     employee = employee_kpi.employee
     if request.POST:
-        measure_of_success = request.POST.get("description")
+        measure_of_success = request.POST.get("measure_of_success")
         weight = request.POST.get("weight")
         score = request.POST.get("score")
         employee_kpi_list = EmployeeKPI.objects.filter(id=kpi_id)
         try:
             employee_kpi_list.update(
-                description=description,
+                measure_of_success=measure_of_success,
                 weight=weight,
                 score=score,
             )
@@ -169,18 +170,18 @@ def delete_employee_kpi(request, kpi_id):
 def manage_your_kpi(request):
     employee = request.user.solitonuser.employee
     employee_kpis = get_all_employee_kpi(employee=employee)
+
     if request.POST:
-        measure_of_success = request.POST.get("description")
+        measure_of_success = request.POST.get("measure_of_success")
         weight = request.POST.get("weight")
         score = request.POST.get("score")
 
         if score > weight:
             messages.warning(request, "Employee KPI added successfully")
             return HttpResponseRedirect(reverse(manage_department_kpi))
-
         try:
             EmployeeKPI.objects.create(
-                description=description,
+                measure_of_success=measure_of_success,
                 weight=weight,
                 score=score,
                 employee=employee,
@@ -201,16 +202,18 @@ def manage_your_kpi(request):
 def edit_your_kpi_page(request, kpi_id):
     employee_kpi = get_employee_kpi(kpi_id)
     if request.POST:
-        description = request.POST.get("description")
+        measure_of_success = request.POST.get("measure_of_success")
         weight = request.POST.get("weight")
         score = request.POST.get("score")
         employee_kpi_list = EmployeeKPI.objects.filter(id=kpi_id)
+
+        employee_kpi_list.update(
+            measure_of_success=measure_of_success,
+            weight=weight,
+            score=score,
+        )
         try:
-            employee_kpi_list.update(
-                measure_of_success=description,
-                weight=weight,
-                score=score,
-            )
+
             messages.warning(request, "Your KPI updated")
             return HttpResponseRedirect(reverse(manage_your_kpi))
         except IntegrityError:
@@ -226,7 +229,6 @@ def edit_your_kpi_page(request, kpi_id):
 
 def delete_your_kpi(request, kpi_id):
     employee_kpi = get_employee_kpi(kpi_id)
-    employee = employee_kpi.employee
     employee_kpi.delete()
     messages.warning(request, "Your KPI has been deleted")
     return HttpResponseRedirect(reverse(manage_your_kpi))
@@ -248,6 +250,7 @@ def employee_performance_ratings_page(request):
     department_kpis = get_all_department_kpi(department)
     employee_kpis = get_all_employee_kpi(employee=employee)
     performance_rating = calculate_performance_rating(employee)
+
     context = {
         "performance_page": "active",
         "employee": employee,

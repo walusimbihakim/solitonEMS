@@ -4,6 +4,16 @@
 {%load performance_tags%}
 {% block page_title %}
 Employees Performance
+<script>
+$(document).ready(function(){
+  $("#search_input").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#employee-performance tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
 {% endblock %}
 
 {%block content%}
@@ -22,6 +32,10 @@ Employees Performance
                 {%if  employees%}
                 <h3>Employees</h3>
                 <div class="table-responsive">
+                    <div class="form-group ">
+                        <i class="fas fa-search " aria-hidden="true"></i>
+                        <input id="search_input" type="text" class="form-control" placeholder="Search....">
+                    </div>
                     <table class="table">
                         <thead class="thead-dark">
                         <th>ID</th>
@@ -29,6 +43,7 @@ Employees Performance
                         <th>Position</th>
                         <th>Performance Rating</th>
                         </thead>
+                        <tbody id="employee-performance">
                         {%for employee in employees%}
                         <tr>
                             <td>{{employee.id}}</td>
@@ -38,6 +53,7 @@ Employees Performance
                             <td>{{organisationdetail.position}}</td>
                         </tr>
                         {%endfor%}
+                        </tbody>
                     </table>
                 </div>
                 {%else%}

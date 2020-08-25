@@ -29,7 +29,6 @@ Employee Performance
                             <table class="table">
                                 <thead class="thead-dark">
                                 <th>ID</th>
-                                <th>Department</th>
                                 <th>Measure of success</th>
                                 <th>Weight</th>
                                 <th>Score</th>
@@ -37,7 +36,6 @@ Employee Performance
                                 {%for department_kpi in department_kpis%}
                                 <tr>
                                     <td>{{department_kpi.id}}</td>
-                                    <td>{{department_kpi.department}}</td>
                                     <td>{{department_kpi.measure_of_success}}</td>
                                     <td>{{department_kpi.weight}}</td>
                                     <td>{{department_kpi.score}}</td>
