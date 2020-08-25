@@ -1,7 +1,5 @@
 from django.urls import path, reverse
 from . import views
-from django.contrib.auth import views as auth_views
-from django.conf.urls import url
 
 urlpatterns = [
     # Pages
@@ -15,6 +13,7 @@ urlpatterns = [
     path('edit_beneficiary_page/<int:id>/', views.edit_beneficiary_page, name="edit_beneficiary_page"),
     path('edit_spouse_page/<int:id>/', views.edit_spouse_page, name="edit_spouse_page"),
     path('edit_dependant_page/<int:id>/', views.edit_dependant_page, name="edit_dependant_page"),
+    path('edit_deduction_page/<int:id>/', views.edit_deduction_page, name="edit_deduction_page"),
 
 
     # Process
