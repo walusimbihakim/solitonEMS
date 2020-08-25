@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.db import IntegrityError
 from django.shortcuts import render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -1065,6 +1066,28 @@ def add_deduction(request):
         return render(request, "employees/failed.html", context)
 
 
+@login_required
+@log_activity
+def edit_deduction_page(request, id):
+    user = request.user
+    deduction = Deduction.objects.get(pk=id)
+    if request.POST:
+        try:
+            amount = request.POST.get("deduction_amount")
+            deduction.amount = amount
+            deduction.save()
+        except IntegrityError:
+            messages.warning(request, "Employee activated")
+        return HttpResponseRedirect(reverse(employee_page, args=[deduction.employee.id]))
+
+    context = {
+        "user": user,
+        "employees_page": "active",
+        "deduction": deduction,
+    }
+    return render(request, 'employees/edit_deduction.html', context)
+
+
 @log_activity
 def add_allowance(request):
     if request.method == 'POST':
@@ -1366,7 +1389,6 @@ def add_employee_contacts(request):
 
 
 def delete_employee_contact(request):
-    print("Jst Here")
     contact_id = request.POST.get('contact_id')
     contact = get_contact(contact_id)
     contact.delete()
