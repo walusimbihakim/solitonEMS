@@ -17,6 +17,10 @@ def get_ugx_payslips(payroll_record):
     return Payslip.objects.filter(payroll_record=payroll_record, currency=ugx_currency)
 
 
+def get_unarchived_payroll_records():
+    return PayrollRecord.objects.filter(archived=False)
+
+
 def get_usd_payslips(payroll_record):
     usd_currency = get_usd_currency()
     return Payslip.objects.filter(payroll_record=payroll_record, currency=usd_currency)
@@ -28,4 +32,3 @@ def get_payroll_record(id):
 
 def get_payslips(payroll_record):
     return Payslip.objects.filter(payroll_record=payroll_record)
-

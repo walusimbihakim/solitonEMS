@@ -2,6 +2,7 @@ import csv
 import datetime
 
 from django.contrib import messages
+from django.db import IntegrityError
 from django.shortcuts import render
 
 from django.http import HttpResponse, HttpResponseRedirect
@@ -12,7 +13,7 @@ from ems_admin.decorators import log_activity
 from ems_auth.decorators import hr_required
 from ems_auth.models import SolitonUser
 from payroll.selectors import get_payroll_record_by_id, get_ugx_payslips, get_usd_payslips, \
-    get_payslips
+    get_payslips, get_unarchived_payroll_records
 from payroll.services import create_payslip_list_service
 from settings.selectors import get_usd_currency
 
@@ -49,13 +50,12 @@ def review_financial_info_page(request):
 @log_activity
 def manage_payroll_records_page(request):
     date_now = datetime.datetime.now()
-
     today_month = date_now.strftime("%B")
     today_year = date_now.strftime("%Y")
     context = {
         "user": request.user,
         "payroll_page": "active",
-        "payroll_records": PayrollRecord.objects.all(),
+        "payroll_records": get_unarchived_payroll_records(),
         "default_month": today_month,
         "default_year": today_year
     }
@@ -261,8 +261,11 @@ def add_period(request):
     # Create payroll instance
     payroll_record = PayrollRecord(month=month, year=year)
     # Save payroll
-    payroll_record.save()
-
+    try:
+        payroll_record.save()
+        messages.success(request, "Payroll for the period created successfully")
+    except IntegrityError:
+        messages.error(request, "Payroll for the period already available")
     return HttpResponseRedirect(reverse('manage_payroll_records_page'))
 
 
@@ -271,6 +274,16 @@ def delete_period(request, id):
     payroll_record = PayrollRecord.objects.get(pk=id)
     # Delete the payrool_record
     payroll_record.delete()
+    return HttpResponseRedirect(reverse('manage_payroll_records_page'))
+
+
+def archive_period(request, id):
+    # Grab the payroll record
+    payroll_record = PayrollRecord.objects.get(pk=id)
+    # Archive the payrool_record
+    payroll_record.archived = True
+    payroll_record.save()
+    messages.success(request, "Archived payroll record successfully")
     return HttpResponseRedirect(reverse('manage_payroll_records_page'))
 
 

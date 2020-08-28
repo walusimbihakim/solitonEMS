@@ -8,6 +8,10 @@ from settings.models import Currency
 class PayrollRecord(models.Model):
     year = models.CharField(max_length=20)
     month = models.CharField(max_length=20)
+    archived = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('year', 'month',)
 
     def __str__(self):
         return self.month + " " + self.year
