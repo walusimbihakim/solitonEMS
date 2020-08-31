@@ -283,6 +283,43 @@ def generate_payroll_ugx_pdf(request, id):
     return HttpResponse(pdf, content_type='application/pdf')
 
 
+@hr_required
+def generate_payroll_usd_pdf(request, id):
+    usd_employees = get_employees_paid_in_usd()
+    payroll_record = PayrollRecord.objects.get(pk=id)
+    # Get the payroll record
+    if usd_employees:
+        month = payroll_record.month
+        year = payroll_record.year
+        # Get all the associated payslip objects
+        usd_currency = get_usd_currency()
+        usd_currency_cost = float(usd_currency.cost)
+        usd_payslips = get_usd_payslips(payroll_record)
+        # Get all employees
+        total_paye = get_total_paye(usd_payslips)
+        total_nssf_contribution = get_total_nssf(usd_payslips)
+        total_paye_ugx = total_paye * usd_currency_cost
+        context = {
+            "payroll_page": "active",
+            "month": month,
+            "year": year,
+            "usd_payslips": usd_payslips,
+            "payroll_record": payroll_record,
+            "total_nssf_contribution": total_nssf_contribution,
+            "total_paye": total_paye,
+            "total_gross_pay": get_total_gross_pay(usd_payslips),
+            "total_basic_pay": get_total_basic_pay(usd_payslips),
+            "total_net_pay": get_total_net_pay(usd_payslips),
+            "total_paye_ugx": total_paye_ugx,
+            "total_nssf_contribution_ugx": total_nssf_contribution * usd_currency_cost,
+            "base_dir": BASE_DIR,
+
+        }
+        pdf = render_to_pdf('solitonems/payroll_usd.html', context)
+        return HttpResponse(pdf, content_type='application/pdf')
+    else:
+        return HttpResponseRedirect(reverse(payroll_record_page, args=[id]))
+
 
 ###############################################################
 # Processes

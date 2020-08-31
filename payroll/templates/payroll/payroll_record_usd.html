@@ -87,6 +87,9 @@ $(document).ready(function(){
                 <a href="{%url 'payroll_download_usd' payroll_record.id %}">
                     <button class="btn btn-outline">Export Excel CSV</button>
                 </a>
+                <a href="{%url 'generate_payroll_usd_pdf' payroll_record.id %}">
+                    <button class="btn btn-outline">Export PDF</button>
+                </a>
             </div>
         </div>
         {%endif%}
