@@ -10,6 +10,7 @@ urlpatterns = [
     path('payroll_record_page/<int:id>/', views.payroll_record_page, name="payroll_record_page"),
     path('generate_payroll_ugx_pdf/<int:id>/', views.generate_payroll_ugx_pdf, name="generate_payroll_ugx_pdf"),
     path('payroll_record_page_usd/<int:id>/', views.payroll_record_page_usd, name="payroll_record_page_usd"),
+    path('generate_payroll_usd_pdf/<int:id>/', views.generate_payroll_usd_pdf, name="generate_payroll_usd_pdf"),
     path('view_payslip_page', views.view_payslip_page, name='view_payslip_page'),
     path('payslip_page/<int:id>', views.payslip_page, name='payslip_page'),
     path('payslips/<int:payroll_record_id>/', views.payslips_page, name="payslips_page"),
