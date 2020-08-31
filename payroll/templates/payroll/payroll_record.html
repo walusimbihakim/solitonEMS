@@ -54,9 +54,9 @@ $(document).ready(function(){
 
                 {%else%}
                 <div class="table-responsive">
-                    <div class="form-group "> 
+                    <div class="form-group ">
                         <i class="fas fa-search " aria-hidden="true"></i>
-                        <input id="search_input" type="text" class="form-control" placeholder="Search....">                      
+                        <input id="search_input" type="text" class="form-control" placeholder="Search....">
                     </div>
                     <table class="table">
                         <thead class="thead-dark">
@@ -96,6 +96,9 @@ $(document).ready(function(){
                 </div>
                 <a href="{%url 'payroll_download' payroll_record.id %}">
                     <button class="btn btn-outline">Export Excel CSV</button>
+                </a>
+                <a href="{%url 'generate_payroll_ugx_pdf' payroll_record.id %}">
+                    <button class="btn btn-outline">Export PDF</button>
                 </a>
             </div>
         </div>
