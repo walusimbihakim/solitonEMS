@@ -58,13 +58,16 @@ $(document).ready(function(){
                                     <button class="btn btn-sm btn-primary">Generate Payroll</button>
                                 </a> |
                                 <a href="{%url 'archive_period' payroll_record.id %}"">
-                                <button class="btn btn-sm btn-success">Archive</button>
+                                <button class="btn btn-sm btn-success"
+                                        onclick="return confirm('Are you sure you want to archive payroll record {{payroll_record.id}}?')">
+                                    Archive</button>
                                 </a> |
                                 <a href="{%url 'delete_period' payroll_record.id %}">
-                                    <button class="btn btn-sm btn-danger" >Delete</button>
+                                    <button class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Are you sure you want to delete payroll record {{payroll_record.id}}?')" >
+                                        Delete</button>
                                 </a>
                             </td>
-
                         </tr>
                         {%endfor%}
                         </tbody>

@@ -8,6 +8,7 @@ urlpatterns = [
     path('view_payroll_records_page', views.view_payroll_records_page, name="view_payroll_records_page"),
     path('edit_period_page/<int:id>/', views.edit_period_page, name="edit_period_page"),
     path('payroll_record_page/<int:id>/', views.payroll_record_page, name="payroll_record_page"),
+    path('generate_payroll_ugx_pdf/<int:id>/', views.generate_payroll_ugx_pdf, name="generate_payroll_ugx_pdf"),
     path('payroll_record_page_usd/<int:id>/', views.payroll_record_page_usd, name="payroll_record_page_usd"),
     path('view_payslip_page', views.view_payslip_page, name='view_payslip_page'),
     path('payslip_page/<int:id>', views.payslip_page, name='payslip_page'),

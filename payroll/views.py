@@ -250,6 +250,40 @@ def generate_payslip_pdf(request, id):
     return HttpResponse(pdf, content_type='application/pdf')
 
 
+@hr_required
+@log_activity
+def generate_payroll_ugx_pdf(request, id):
+    # Get the payroll
+    payroll_record = PayrollRecord.objects.get(pk=id)
+
+    month = payroll_record.month
+    year = payroll_record.year
+
+    # Get all the associated payslip objects
+    payslips = get_payslips(payroll_record=payroll_record)
+    ugx_payslips = get_ugx_payslips(payroll_record)
+    usd_payslips = get_usd_payslips(payroll_record)
+
+    context = {
+        "payroll_page": "active",
+        "month": month,
+        "year": year,
+        "payslips": payslips,
+        "ugx_payslips": ugx_payslips,
+        "usd_payslips": usd_payslips,
+        "payroll_record": payroll_record,
+        "total_nssf_contribution": get_total_nssf(ugx_payslips),
+        "total_paye": get_total_paye(ugx_payslips),
+        "total_gross_pay": get_total_gross_pay(ugx_payslips),
+        "total_basic_pay": get_total_basic_pay(ugx_payslips),
+        "total_net_pay": get_total_net_pay(ugx_payslips),
+        "base_dir": BASE_DIR,
+    }
+    pdf = render_to_pdf('solitonems/payroll.html', context)
+    return HttpResponse(pdf, content_type='application/pdf')
+
+
+
 ###############################################################
 # Processes
 ###############################################################
