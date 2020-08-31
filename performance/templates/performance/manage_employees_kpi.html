@@ -37,7 +37,8 @@ Manage employee KPI
                             <td>{{organisationdetail.position}}</td>
                             <td>{{organisationdetail.employee.id | performance_rating_filter}}</td>
                             <td>
-                                <a href="{%url 'manage_employee_kpi_page' organisationdetail.employee.id%}">Manage KPIs</a></td>
+                                <a href="{%url 'manage_employee_kpi_page' organisationdetail.employee.id%}">
+                                    <button class="btn btn-sm btn-primary">Manage KPIs</button></a></td>
                         </tr>
                         {%endfor%}
                     </table>

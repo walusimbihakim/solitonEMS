@@ -17,6 +17,7 @@ urlpatterns = [
     # Processing
     path('add_period/', views.add_period, name="add_period"),
     path('delete_period/<int:id>/', views.delete_period, name="delete_period"),
+    path('archive_period/<int:id>/', views.archive_period, name="archive_period"),
     path('edit_period/', views.edit_period, name="edit_period"),
     path('generate_payroll/<int:id>', views.create_payroll_payslips, name="generate_payroll"),
     path('add_prorate/', views.add_prorate, name="add_prorate"),

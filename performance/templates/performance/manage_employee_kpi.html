@@ -38,8 +38,10 @@ Manage {{employee}} KPI
                             <td>{{employee_kpi.weight}}</td>
                             <td>{{employee_kpi.score}}</td>
                             <td>
-                                <a href="{%url 'edit_employee_kpi_page' employee_kpi.id%}">Edit</a> |
-                                <a href="{%url 'delete_employee_kpi' employee_kpi.id%}">Delete</a></td>
+                                <a href="{%url 'edit_employee_kpi_page' employee_kpi.id%}">
+                                    <button class="btn btn-sm btn-primary">Edit</button></a> |
+                                <a href="{%url 'delete_employee_kpi' employee_kpi.id%}">
+                                    <button class="btn btn-sm btn-danger">Delete</button></a></td>
                         </tr>
                         {%endfor%}
                     </table>
