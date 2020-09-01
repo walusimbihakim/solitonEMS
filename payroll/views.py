@@ -23,7 +23,7 @@ from .simple_payslip import SimplePayslip
 
 from .procedures import get_total_non_statutory_deductions, get_total_nssf, get_total_paye, get_total_gross_pay, \
     get_total_basic_pay, \
-    get_total_net_pay, render_to_pdf
+    get_total_net_pay, render_to_pdf, get_total_sacco
 
 
 @hr_required
@@ -274,6 +274,7 @@ def generate_payroll_ugx_pdf(request, id):
         "payroll_record": payroll_record,
         "total_nssf_contribution": get_total_nssf(ugx_payslips),
         "total_paye": get_total_paye(ugx_payslips),
+        "total_sacco": get_total_sacco(ugx_payslips),
         "total_gross_pay": get_total_gross_pay(ugx_payslips),
         "total_basic_pay": get_total_basic_pay(ugx_payslips),
         "total_net_pay": get_total_net_pay(ugx_payslips),
@@ -299,6 +300,7 @@ def generate_payroll_usd_pdf(request, id):
         total_paye = get_total_paye(usd_payslips)
         total_nssf_contribution = get_total_nssf(usd_payslips)
         total_paye_ugx = total_paye * usd_currency_cost
+
         context = {
             "payroll_page": "active",
             "month": month,
@@ -307,6 +309,7 @@ def generate_payroll_usd_pdf(request, id):
             "payroll_record": payroll_record,
             "total_nssf_contribution": total_nssf_contribution,
             "total_paye": total_paye,
+            "total_sacco": get_total_sacco(usd_payslips),
             "total_gross_pay": get_total_gross_pay(usd_payslips),
             "total_basic_pay": get_total_basic_pay(usd_payslips),
             "total_net_pay": get_total_net_pay(usd_payslips),

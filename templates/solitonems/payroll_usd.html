@@ -6,6 +6,10 @@
 <head>
     <title>Payroll PDF</title>
     <style type="text/css">
+           @page {
+               size: letter landscape;
+               margin: 1cm;
+            }
             body {
 				font-family: Arial, Helvetica, sans-serif;
                 font-weight: 200;
@@ -24,7 +28,7 @@
                 color: #007cae;
             }
             .details {
-                padding: 10px 20px 0px 20px;
+                padding: 2px;
                 text-align: center !important;
                 font-size:0.9 em;
                 /*margin-left: 40%;*/
@@ -42,9 +46,6 @@
 			.bank-row,.financial-row,.personnel-row,.income-row, .total-row,.total-values-row,.income-values{
 				border: 1px solid #000;
 			}
-
-
-
         </style>
 </head>
 <body>
@@ -90,6 +91,7 @@
         <th>Gross Pay</th>
         <th>NSSF Contribution (UGX)</th>
         <th>PAYE (UGX)</th>
+        <th>Sacco</th>
         <th>Net Pay</th>
         {%for payslip in usd_payslips%}
         <tr>
@@ -99,6 +101,7 @@
             <td>{{payslip.gross_salary| currency_filter}}</td>
             <td>{{payslip.nssf_ugx| currency_filter}}</td>
             <td>{{payslip.paye_ugx| currency_filter}}</td>
+            <td>{{payslip.sacco_deduction | currency_filter}}</td>
             <td>{{payslip.net_salary| currency_filter}}</td>
         </tr>
         {%endfor%}
@@ -108,13 +111,16 @@
             <td>{{total_gross_pay| currency_filter}}</td>
             <td>{{total_nssf_contribution_ugx| currency_filter}}</td>
             <td>{{total_paye_ugx| currency_filter}}</td>
+            <td>{{total_sacco | currency_filter}}</td>
             <td>{{total_net_pay| currency_filter}}</td>
         </tr>
     </table>
     <small>Generated with Soliton Bakozi on {% now "jS F Y" %}</small>
     <h2>Prepared by: Human Resource Manager</h2>
     <p>................................................................</p>
-     <h2>Approved by: Chief Financial Officer</h2>
+    <h2>Approved by: Chief Financial Officer</h2>
+    <p>................................................................</p>
+    <h2>Approved by: Chief Executive Officer</h2>
     <p>................................................................</p>
 </div>
 </div>
