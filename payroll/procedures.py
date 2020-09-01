@@ -29,6 +29,18 @@ def get_total_paye(payslips):
     return paye
 
 
+def get_total_sacco(payslips):
+    sum = payslips.aggregate(Sum('sacco_deduction'))
+    sacco = sum['sacco_deduction__sum']
+    return sacco
+
+
+def get_total_sacco(payslips):
+    sum = payslips.aggregate(Sum('sacco_deduction'))
+    sacco = sum['sacco_deduction__sum']
+    return sacco
+
+
 def get_total_gross_pay(payrolls):
     sum = payrolls.aggregate(Sum('gross_salary'))
     gross_salary = sum['gross_salary__sum']
