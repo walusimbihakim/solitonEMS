@@ -34,7 +34,7 @@ SOLITONEMS_APPS = [
     'learning_and_development',
     'training',
     'notification',
-    'performance',
+    'performance'
 ]
 
 DJANGO_APPS = [
