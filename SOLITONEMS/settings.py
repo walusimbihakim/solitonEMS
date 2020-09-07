@@ -119,8 +119,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = '/home/solitonug/solitonEMS/static'
 
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = 'apikey'  # this is exactly the value 'apikey'
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("SENDGRID_API_KEY")
 FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")

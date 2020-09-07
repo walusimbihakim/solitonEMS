@@ -262,9 +262,13 @@
                                 </p>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
-                                <center><h4 style="font-weight: bold">{{user.solitonuser.employee.position}}</h4></center>
-                                <a class="dropdown-item" href="#">{{user.solitonuser.employee.first_name}}
-                                    {{user.solitonuser.employee.last_name}}</a>
+                                <center>
+                                    <h4 style="font-weight: bold">{{user.solitonuser.employee.position}}</h4>
+                                </center>
+                                <a class="dropdown-item"
+                                   href="{%url 'employee_profile_page' user.solitonuser.employee.id %}">
+                                    {{user.solitonuser.employee}}
+                                </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{%url 'settings_page'%}">Settings</a>
                                 <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>

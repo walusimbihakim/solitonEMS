@@ -1310,10 +1310,8 @@ def suspend_employee(request, employee_id):
     return HttpResponseRedirect(reverse('employees_page'))
 
 
-@log_activity
 def employee_profile_page(request, employee_id):
     employee = get_employee(employee_id)
-
     context = {
         "user": request.user,
         "employees_page": "active",
