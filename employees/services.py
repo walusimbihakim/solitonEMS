@@ -94,4 +94,12 @@ def add_employee_contacts(request):
         employee.save()
 
 
-
+def update_deduction(employee, sacco, damage, salary_advance, police_fine):
+    """Update Non statutory deductions of an employee"""
+    deduction = employee.deduction
+    deduction.sacco = sacco
+    deduction.damage = damage
+    deduction.salary_advance = salary_advance
+    deduction.police_fine = police_fine
+    deduction.save()
+    return deduction

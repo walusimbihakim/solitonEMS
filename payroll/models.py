@@ -30,6 +30,8 @@ class Payslip(models.Model):
     bonus = models.FloatField(default=0)
     sacco_deduction = models.FloatField()
     damage_deduction = models.FloatField()
+    salary_advance = models.FloatField()
+    police_fine = models.FloatField()
     prorate = models.CharField(max_length=20, default="0.0")
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE, default="")
     basic_salary = models.IntegerField(default=0)

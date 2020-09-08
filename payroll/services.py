@@ -34,6 +34,8 @@ def create_payslip_service(employee: object, payroll_record: object, overtime_pa
         bonus=simple_payslip.bonus,
         sacco_deduction=simple_payslip.sacco_deduction_amount,
         damage_deduction=simple_payslip.damage_deduction_amount,
+        salary_advance=simple_payslip.salary_advance_amount,
+        police_fine=simple_payslip.police_fine_amount,
         currency=employee.currency,
         basic_salary=employee.basic_salary,
     )
