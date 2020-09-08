@@ -8,7 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.http import JsonResponse
 
-from employees.services import create_employee_instance, suspend
+from employees.services import create_employee_instance, suspend, update_deduction
 from ems_admin.decorators import log_activity
 from ems_auth.decorators import ems_login_required, hr_required, first_login
 from ems_auth.models import User
@@ -99,7 +99,6 @@ def employee_page(request, id):
         "beneficiaries": employee.beneficiary_set.all(),
         "spouses": employee.spouse_set.all(),
         "dependants": employee.dependant_set.all(),
-        "deductions": employee.deduction_set.all(),
         "deps": Department.objects.all(),
         "titles": Position.objects.all(),
         "teams": Team.objects.all(),
@@ -1038,24 +1037,28 @@ def delete_dependant(request, id):
 def add_deduction(request):
     if request.method == 'POST':
         # Fetching data from the add deductions' form
-        name = request.POST['deduction_name']
-        amount = request.POST['deduction_amount']
+        sacco = request.POST['sacco']
+        damage = request.POST['damage']
+        salary_advance = request.POST['salary_advance']
+        police_fine = request.POST['police_fine']
+
         employee_id = request.POST['employee_id']
         employee = Employee.objects.get(pk=employee_id)
 
-        # Creating instance of Deduction
-        deduction = Deduction(employee=employee, name=name, amount=amount)
+        try:
+            deduction = Deduction.objects.create(
+                employee=employee,
+                sacco=sacco,
+                damage=damage,
+                salary_advance=salary_advance,
+                police_fine=police_fine
+            )
+            messages.success(request, "Successfully added sacco deduction")
+            return HttpResponseRedirect(reverse(add_more_details_page, args=[employee_id]))
 
-        # Saving the Deduction instance
-        deduction.save()
-        context = {
-            "employees_page": "active",
-            "success_msg": "You have successfully added %s to the non statutory deductions" % (deduction.name),
-            "employee": employee
-        }
-
-        return render(request, 'employees/success.html', context)
-
+        except IntegrityError:
+            messages.error(request, "Integrity problems while adding deduction")
+            return HttpResponseRedirect(reverse(add_more_details_page, args=[employee_id]))
 
     else:
         context = {
@@ -1066,26 +1069,36 @@ def add_deduction(request):
         return render(request, "employees/failed.html", context)
 
 
-@login_required
+@ems_login_required
 @log_activity
-def edit_deduction_page(request, id):
-    user = request.user
-    deduction = Deduction.objects.get(pk=id)
+def edit_deduction(request):
     if request.POST:
         try:
-            amount = request.POST.get("deduction_amount")
-            deduction.amount = amount
-            deduction.save()
-        except IntegrityError:
-            messages.warning(request, "Employee activated")
-        return HttpResponseRedirect(reverse(employee_page, args=[deduction.employee.id]))
+            sacco = request.POST['sacco']
+            damage = request.POST['damage']
+            salary_advance = request.POST['salary_advance']
+            police_fine = request.POST['police_fine']
+            employee_id = request.POST['employee_id']
+            employee = Employee.objects.get(pk=employee_id)
 
-    context = {
-        "user": user,
-        "employees_page": "active",
-        "deduction": deduction,
-    }
-    return render(request, 'employees/edit_deduction.html', context)
+            deduction = update_deduction(employee=employee,
+                                         sacco=sacco,
+                                         damage=damage,
+                                         salary_advance=salary_advance,
+                                         police_fine=police_fine)
+            messages.success(request, "Deduction updated successfully")
+            return HttpResponseRedirect(reverse(add_more_details_page, args=[employee_id]))
+        except IntegrityError:
+            messages.error(request, "Integrity problems while adding deduction")
+            return HttpResponseRedirect(reverse(add_more_details_page, args=[employee_id]))
+
+    else:
+        context = {
+            "employees_page": "active",
+            "failed_msg": "Failed! You performed a GET request"
+        }
+
+        return render(request, "employees/failed.html", context)
 
 
 @log_activity
@@ -1334,7 +1347,6 @@ def add_more_details_page(request, employee_id):
         "beneficiaries": employee.beneficiary_set.all(),
         "spouses": employee.spouse_set.all(),
         "dependants": employee.dependant_set.all(),
-        "deductions": employee.deduction_set.all(),
         "deps": Department.objects.all(),
         "titles": Position.objects.all(),
         "teams": Team.objects.all(),

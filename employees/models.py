@@ -141,12 +141,18 @@ class Dependant(models.Model):
 
 
 class Deduction(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    name = models.CharField(max_length=20)
-    amount = models.IntegerField()
+    employee = models.OneToOneField(Employee, on_delete=models.CASCADE)
+    sacco = models.IntegerField(default=0)
+    damage = models.IntegerField(default=0)
+    salary_advance = models.IntegerField(default=0)
+    police_fine = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.name + " " + str(self.amount)
+        return self.employee.first_name + " Deduction"
+
+    @property
+    def total_deduction(self):
+        return self.sacco + self.damage + self.salary_advance + self.police_fine
 
 
 class Leave(models.Model):

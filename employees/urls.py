@@ -13,7 +13,6 @@ urlpatterns = [
     path('edit_beneficiary_page/<int:id>/', views.edit_beneficiary_page, name="edit_beneficiary_page"),
     path('edit_spouse_page/<int:id>/', views.edit_spouse_page, name="edit_spouse_page"),
     path('edit_dependant_page/<int:id>/', views.edit_dependant_page, name="edit_dependant_page"),
-    path('edit_deduction_page/<int:id>/', views.edit_deduction_page, name="edit_deduction_page"),
 
 
     # Process
@@ -43,6 +42,7 @@ urlpatterns = [
 
 
     path('add_deduction/', views.add_deduction, name="add_deduction"),
+    path('edit_deduction/', views.edit_deduction, name="edit_deduction"),
     path('add_allowance/', views.add_allowance, name="add_allowance"),
     path('add_supervisee/', views.add_supervisee, name="add_supervisee"),
     path('delete_superviser/<int:id>/', views.delete_supervisee, name="delete_supervisee"),

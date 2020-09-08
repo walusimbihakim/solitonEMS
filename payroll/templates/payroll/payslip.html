@@ -68,9 +68,18 @@
                             <td> {{payslip.currency}} {{payslip.sacco_deduction | currency_filter}}</td>
                         </tr>
                         <tr>
-                            <th>Damage Deduction
-                            </td>
+                            <th>Damage Deduction </td>
                             <td> {{payslip.currency}} {{payslip.damage_deduction | currency_filter}}</td>
+                        </tr>
+                        <tr>
+                            <th>Salary Advance </th>
+                            <td> {{payslip.currency}} {{payslip.salary_advance | currency_filter}}</td>
+                        </tr>
+                        <tr>
+                            <th>Police Fine</th>
+                            <td>
+                                {{payslip.currency}} {{payslip.police_fine | currency_filter}}
+                            </td>
                         </tr>
                         <tr>
                             <th>Prorate
