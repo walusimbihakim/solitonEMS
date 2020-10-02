@@ -3,7 +3,7 @@ import datetime
 
 from employees.models import Employee
 from organisation_details.selectors import get_department_instance
-from .models import LeaveApplication, Leave_Records, Leave_Types, LeavePlan
+from .models import LeaveApplication, LeaveRecord, Leave_Types, LeavePlan
 
 user = get_user_model()
 
@@ -19,12 +19,12 @@ def get_leave_type(leave_type_id):
 
 # Leave Records Selectors
 def get_all_leave_records():
-    return Leave_Records.objects.all()
+    return LeaveRecord.objects.all()
 
 
 def get_leave_record(employee):
     try:
-        leave_record = Leave_Records.objects.get(employee=employee, leave_year=datetime.date.today().year)
+        leave_record = LeaveRecord.objects.get(employee=employee, leave_year=datetime.date.today().year)
         return leave_record
     except:
         return None

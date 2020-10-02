@@ -27,7 +27,7 @@ from .models import (
     Supervision,
     Deduction,
     Contacts, StatutoryDeduction)
-from leave.models import Leave_Records
+from leave.models import LeaveRecord
 
 from settings.models import Currency
 import csv
@@ -86,7 +86,7 @@ def employee_page(request, id):
     yr = date.today().year
     leave_record = ""
     try:
-        leave_record = Leave_Records.objects.get(employee=employee.id, leave_year=yr)
+        leave_record = LeaveRecord.objects.get(employee=employee.id, leave_year=yr)
     except:
         pass
 
@@ -1237,7 +1237,7 @@ def edit_leave_details(request):
 
             leave_record.save()
         else:
-            leave_record = Leave_Records(
+            leave_record = LeaveRecord(
                 employee=employee,
                 leave_year=date.today().year,
                 entitlement=entitlement,

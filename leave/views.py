@@ -33,7 +33,7 @@ from .models import (
     Leave_Types,
     LeaveApplication,
     annual_planner,
-    Leave_Records,
+    LeaveRecord,
     LeavePlan)
 
 
@@ -172,13 +172,14 @@ def delete_leave_type(request, id):
 @login_required
 def apply_leave_page(request):
     employee = request.user.solitonuser.employee
-    leave_record = Leave_Records.objects.get(employee=employee, \
-                                             leave_year=datetime.date.today().year)
-    leave_balance = -1
+    current_year = datetime.date.today().year
+
     try:
+        leave_record = LeaveRecord.objects.get(employee=employee,
+                                               leave_year=current_year)
         leave_balance = leave_record.balance
-    except:
-        pass
+    except LeaveRecord.DoesNotExist:
+        leave_balance = -1
 
     context = {
         "leave_page": "active",
@@ -371,7 +372,7 @@ def approve_leave(request):
         l_type = leave_application.leave_type
         n_days = leave_application.no_of_days
 
-        leave_record = Leave_Records.objects. \
+        leave_record = LeaveRecord.objects. \
             get(employee=employee, leave_year=datetime.date.today().year)
 
         if user.is_supervisor:
@@ -416,7 +417,7 @@ def approve_leave(request):
 
             leave_application.save()
 
-            Leave_Records.objects.filter(
+            LeaveRecord.objects.filter(
                 employee=employee,
                 leave_year=datetime.date.today().year).update(
                 leave_applied=total_applied,
@@ -488,7 +489,7 @@ def leave_records(request):
     current_year = datetime.date.today().year
     context = {
         "leave_page": "active",
-        "leave_records": Leave_Records.objects.filter(leave_year=current_year),
+        "leave_records": LeaveRecord.objects.filter(leave_year=current_year),
         "leave_year": current_year,
         "years": generate_years(),
     }
@@ -501,16 +502,16 @@ def add_leave_records(request):
     if request.method == "POST":
         yr = request.POST["leave_yr"]
 
-        leave_records = Leave_Records.objects.all()
+        leave_records = LeaveRecord.objects.all()
         employees = Employee.objects.all()
 
         if not leave_records:
             for employee in employees:
                 employee_name = employee.id
 
-                leave_record = Leave_Records(employee=employee, leave_year=yr, \
-                                             entitlement=21, residue=0, leave_applied=0, total_taken=0, \
-                                             balance=21)
+                leave_record = LeaveRecord(employee=employee, leave_year=yr, \
+                                           entitlement=21, residue=0, leave_applied=0, total_taken=0, \
+                                           balance=21)
 
                 leave_record.save()
             messages.success(request, f'Leave Records Generated for the Year - {yr}')
@@ -536,10 +537,10 @@ def add_leave_records(request):
 
                         initial_balance = entitlement + residue
 
-                        leave_record = Leave_Records(employee=employee, leave_year=yr, \
-                                                     entitlement=entitlement, residue=residue, leave_applied=0,
-                                                     total_taken=0, \
-                                                     balance=initial_balance)
+                        leave_record = LeaveRecord(employee=employee, leave_year=yr, \
+                                                   entitlement=entitlement, residue=residue, leave_applied=0,
+                                                   total_taken=0, \
+                                                   balance=initial_balance)
 
                         leave_record.save()
                     messages.success(request, f'Leave Records Generated for the Year - {yr}')
@@ -547,7 +548,7 @@ def add_leave_records(request):
                 messages.warning(request, f'Records Not created for the year - {yr}')
         context = {
             "leave_page": "active",
-            "leave_records": Leave_Records.objects.filter(leave_year=yr),
+            "leave_records": LeaveRecord.objects.filter(leave_year=yr),
             "leave_year": yr,
             "years": generate_years()
         }
@@ -630,12 +631,14 @@ def get_no_of_days(request):
         if leave_type:
             leave = Leave_Types.objects.get(id=leave_type)
 
+
+
             if leave.leave_type != "Annual":
                 no_of_days = leave.leave_days
 
             else:
-                leave_records = Leave_Records.objects.get(employee=employee, \
-                                                          leave_year=datetime.date.today().year)
+                leave_records = LeaveRecord.objects.get(employee=employee, \
+                                                        leave_year=datetime.date.today().year)
 
                 no_of_days = leave_records.balance
 
