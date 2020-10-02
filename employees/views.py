@@ -1,3 +1,4 @@
+import datetime
 from datetime import date
 
 from django.db import IntegrityError
@@ -12,6 +13,7 @@ from employees.services import create_employee_instance, suspend, update_deducti
 from ems_admin.decorators import log_activity
 from ems_auth.decorators import ems_login_required, hr_required, first_login
 from ems_auth.models import User
+from leave.forms.leave_record import LeaveRecordForm
 from organisation_details.models import Department, Position, Team, OrganisationDetail
 from organisation_details.selectors import get_all_positions
 from settings.selectors import get_all_currencies
@@ -27,14 +29,14 @@ from .models import (
     Supervision,
     Deduction,
     Contacts, StatutoryDeduction)
-from leave.models import Leave_Records
+from leave.models import LeaveRecord
 
 from settings.models import Currency
 import csv
 
 from notification.selectors import get_user_notifications
 from .selectors import get_employee, get_active_employees, get_passive_employees, get_employee_contacts, get_contact
-from leave.selectors import get_leave_record
+from leave.selectors import get_leave_record, get_current_year
 
 
 @ems_login_required
@@ -86,7 +88,7 @@ def employee_page(request, id):
     yr = date.today().year
     leave_record = ""
     try:
-        leave_record = Leave_Records.objects.get(employee=employee.id, leave_year=yr)
+        leave_record = LeaveRecord.objects.get(employee=employee.id, leave_year=yr)
     except:
         pass
 
@@ -1215,44 +1217,47 @@ def delete_deduction(request, id):
     return render(request, 'employees/deleted.html', context)
 
 
+@hr_required
 @log_activity
-def edit_leave_details(request):
+def add_leave_record(request):
     if request.method == 'POST':
         # Fetching data from the edit leave' form
-        employee = Employee.objects.get(pk=request.POST['employee_id'])
-        entitlement = request.POST['entitlement']
-        balance = request.POST['leave_balance']
-        residue = request.POST['residue']
-        no_of_leaves = request.POST['no_of_leaves']
-        total_taken = request.POST['total_taken']
-
-        leave_record = get_leave_record(employee)
-
-        if leave_record:
-            leave_record.entitlement = entitlement
-            leave_record.residue = residue
-            leave_record.leave_applied = no_of_leaves
-            leave_record.total_taken = total_taken
-            leave_record.balance = balance
-
-            leave_record.save()
+        employee_id = request.POST['employee_id']
+        current_year = datetime.datetime.now().year
+        employee = get_employee(employee_id)
+        form = LeaveRecordForm(request.POST, request.FILES)
+        if form.is_valid():
+            leave_record = form.save(commit=False)
+            leave_record.employee = employee
+            leave_record.leave_year = current_year
+            try:
+                leave_record.save()
+            except IntegrityError:
+                messages.error(request, "Integrity problems while saving leave record")
+            messages.success(request, "Successfully added a leave record")
         else:
-            leave_record = Leave_Records(
-                employee=employee,
-                leave_year=date.today().year,
-                entitlement=entitlement,
-                residue=residue, balance=balance,
-                leave_applied=no_of_leaves,
-                total_taken=total_taken
-            )
+            messages.error(request, "Form is not valid")
 
-            leave_record.save()
+        return HttpResponseRedirect(reverse('add_more_details_page', args=[employee_id]))
 
-        context = {
-            "employees_page": "active",
-            "success_msg": "You have successfully added leave records",
-        }
-        return HttpResponseRedirect(reverse('employee_page', args=[employee_id]))
+
+@hr_required
+@log_activity
+def edit_leave_record(request):
+    if request.method == 'POST':
+        # Fetching data from the edit leave' form
+        employee_id = request.POST['employee_id']
+        current_year = datetime.datetime.now().year
+        employee = get_employee(employee_id)
+        leave_record = get_leave_record(employee, current_year)
+        form = LeaveRecordForm(request.POST, request.FILES, instance=leave_record)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Successfully edited a leave record")
+        else:
+            messages.error(request, "Form is not valid")
+
+        return HttpResponseRedirect(reverse('add_more_details_page', args=[employee_id]))
 
 
 @log_activity
@@ -1393,6 +1398,11 @@ def employee_profile_page(request, employee_id):
 def add_more_details_page(request, employee_id):
     employee = get_employee(employee_id)
     positions = get_all_positions()
+    year = get_current_year()
+    leave_record = get_leave_record(employee, year)
+    leave_record_form = LeaveRecordForm()
+    edit_leave_record_form = LeaveRecordForm(instance=leave_record)
+
     context = {
         "user": request.user,
         "employees_page": "active",
@@ -1409,6 +1419,9 @@ def add_more_details_page(request, employee_id):
         "supervisee_options": Employee.objects.exclude(pk=employee.id),
         "supervisions": Supervision.objects.filter(supervisor=employee),
         "positions": positions,
+        "leave_record_form": leave_record_form,
+        "edit_leave_record_form": edit_leave_record_form,
+        "leave_record": leave_record,
     }
 
     return render(request, 'employees/add_more_details.html', context)

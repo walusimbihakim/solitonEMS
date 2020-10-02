@@ -5,3 +5,5 @@ django-dajaxice
 django-dajax
 django-javascript-settings
 psycopg2-binary
+django-crispy-forms
+
