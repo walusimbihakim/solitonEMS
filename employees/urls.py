@@ -53,7 +53,8 @@ urlpatterns = [
     path('edit_organisation_details/', views.edit_organisation_details, name="edit_organisation_details"),
     path('employees_download/', views.employees_download, name="employees_download"),
 
-    path('edit_leave_details/', views.edit_leave_details, name="edit_leave_details"),
+    path('add_leave_record/', views.add_leave_record, name="add_leave_record"),
+    path('edit_leave_record/', views.edit_leave_record, name="edit_leave_record"),
     path('suspend_employee/<int:employee_id>/', views.suspend_employee, name="suspend_employee"),
     path('employee_profile_page/<int:employee_id>/', views.employee_profile_page, name="employee_profile_page"),
     path('add_more_details_page/<int:employee_id>/', views.add_more_details_page, name="add_more_details_page"),
