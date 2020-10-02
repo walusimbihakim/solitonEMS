@@ -11,7 +11,7 @@ from django.urls import reverse
 
 from employees.models import Employee
 from ems_admin.decorators import log_activity
-from ems_auth.decorators import ems_login_required, hr_required
+from ems_auth.decorators import ems_login_required, hr_required, hod_required
 from holidays.models import Holiday
 from leave.decorators import leave_record_required
 from leave.selectors import (
@@ -829,6 +829,7 @@ def create_leave_plan_page(request):
     return render(request, "leave/create_leave_plan.html", context)
 
 
+@hod_required
 @login_required
 @organisationdetail_required
 def approve_leave_plan_page(request):
@@ -861,6 +862,7 @@ def reject_leave_plan(request, id):
     return HttpResponseRedirect(reverse(approve_leave_plan_page))
 
 
+@hod_required
 @login_required
 @organisationdetail_required
 def leave_plans_page(request):
@@ -891,11 +893,9 @@ def leave_plans_page(request):
 @organisationdetail_required
 def month_leave_plans_page(request, month_id):
     hod = request.user.solitonuser.employee
-    leave_plans = get_approved_leave_plans(hod,month_id)
+    leave_plans = get_approved_leave_plans(hod, month_id)
     context = {
         "leave_page": "active",
         "leave_plans": leave_plans
     }
     return render(request, "leave/month_leave_plans.html", context)
-
-
