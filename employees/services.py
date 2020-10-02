@@ -1,6 +1,6 @@
 from employees.models import Employee
 from settings.models import Currency
-from leave.models import Leave_Records
+from leave.models import LeaveRecord
 import datetime
 
 
@@ -71,7 +71,7 @@ def add_leave_record(employee, start_date):
         else:
             leave_days = (12 - (start_month - 1)) * 1.75
 
-    leave_record = Leave_Records(
+    leave_record = LeaveRecord(
         employee=employee,
         leave_year=current_year,
         entitlement=leave_days,

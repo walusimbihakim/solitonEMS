@@ -34,7 +34,10 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'javascript_settings',
+    'crispy_forms',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 INSTALLED_APPS = SOLITONEMS_APPS + DJANGO_APPS
 

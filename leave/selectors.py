@@ -3,7 +3,7 @@ import datetime
 
 from employees.models import Employee
 from organisation_details.selectors import get_department_instance
-from .models import LeaveApplication, Leave_Records, Leave_Types, LeavePlan
+from .models import LeaveApplication, LeaveRecord, Leave_Types, LeavePlan
 
 user = get_user_model()
 
@@ -19,14 +19,14 @@ def get_leave_type(leave_type_id):
 
 # Leave Records Selectors
 def get_all_leave_records():
-    return Leave_Records.objects.all()
+    return LeaveRecord.objects.all()
 
 
-def get_leave_record(employee):
+def get_leave_record(employee, year):
     try:
-        leave_record = Leave_Records.objects.get(employee=employee, leave_year=datetime.date.today().year)
+        leave_record = LeaveRecord.objects.get(employee=employee, leave_year=year)
         return leave_record
-    except:
+    except LeaveRecord.DoesNotExist:
         return None
 
 
@@ -114,3 +114,7 @@ def get_hod_approved_leave_plans(hod):
         if applicant_department.id is hod_department.id:
             hod_approved_applications.append(approved_leave_plan)
     return hod_approved_applications
+
+
+def get_current_year():
+    return datetime.datetime.now().year

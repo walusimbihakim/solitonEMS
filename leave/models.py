@@ -43,7 +43,7 @@ class LeaveApplication(models.Model):
         return f"{id} - {self.leave_type} - {employee.first_name}"
 
 
-class Leave_Records(models.Model):
+class LeaveRecord(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     leave_year = models.IntegerField()
     entitlement = models.IntegerField(default=21)
@@ -51,6 +51,12 @@ class Leave_Records(models.Model):
     leave_applied = models.IntegerField(default=0)
     total_taken = models.IntegerField(default=0)
     balance = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = ("employee", "leave_year")
+
+    def __str__(self):
+        return f"Leave Record {self.leave_year}"
 
 
 class annual_planner(models.Model):

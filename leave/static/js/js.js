@@ -3,6 +3,7 @@ $(document).ready(() => {
     $("#leave_type").change(() => {
         leave_type = document.querySelector('#leave_type').value;
 
+        console.log(leave_type)
         $.ajax({
             type: 'get',
             url: configuration['leave']['get_no_of_days'],
