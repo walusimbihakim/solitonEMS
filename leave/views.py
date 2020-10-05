@@ -21,7 +21,7 @@ from leave.selectors import (
     get_hr_users,
     get_employee_leave_applications,
     get_leave_record,
-    get_recent_leave_plans, get_hod_pending_leave_plans, get_leave_plan, get_approved_leave_plans)
+    get_recent_leave_plans, get_hod_pending_leave_plans, get_leave_plan, get_approved_leave_plans, get_current_year)
 from leave.services import send_leave_application_email, send_leave_response_email
 from notification.services import create_notification
 from organisation_details.decorators import organisationdetail_required
@@ -209,8 +209,8 @@ def apply_leave(request):
         organisationdetail = get_organisationdetail(user)
         department = organisationdetail.department
         team = organisationdetail.team
-
-        leave_record = get_leave_record(employee)
+        current_year = get_current_year()
+        leave_record = get_leave_record(employee, current_year)
         leave_type = get_leave_type(request.POST["ltype"])
 
         start_date = request.POST["s_date"]
@@ -630,8 +630,6 @@ def get_no_of_days(request):
 
         if leave_type:
             leave = Leave_Types.objects.get(id=leave_type)
-
-
 
             if leave.leave_type != "Annual":
                 no_of_days = leave.leave_days
