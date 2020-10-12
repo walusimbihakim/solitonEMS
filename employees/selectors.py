@@ -1,4 +1,4 @@
-from employees.models import Employee, Contacts
+from employees.models import Employee, Contacts, Deduction, StatutoryDeduction
 from settings.selectors import get_ugx_currency, get_usd_currency
 
 
@@ -30,3 +30,17 @@ def get_employee_contacts(employee):
 
 def get_contact(contact_id):
     return Contacts.objects.get(pk=contact_id)
+
+
+def get_employee_deduction(employee):
+    deduction, created = Deduction.objects.get_or_create(
+        employee=employee,
+    )
+    return deduction
+
+
+def get_employee_statutory_deduction(employee):
+    statutory_deduction, created = StatutoryDeduction.objects.get_or_create(
+        employee=employee,
+    )
+    return statutory_deduction
