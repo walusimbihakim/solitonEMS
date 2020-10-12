@@ -2,6 +2,7 @@ from django.template.loader import get_template
 
 from django.core.mail import EmailMultiAlternatives
 
+from notification.services import create_notification
 from organisation_details.selectors import get_is_supervisor_in_team, get_is_hod_in_department
 from overtime.models import OvertimeApplication
 from overtime.selectors import get_hr_users, get_hod_users, get_cfo_users, get_ceo_users, \
@@ -169,17 +170,21 @@ def update_overtime_application(overtime_application_id, start_time, end_time, d
     )
 
 
-def cfo_approve_plan(overtime_plan):
+def ceo_approve_plan(overtime_plan):
     overtime_plan.cfo_approval = 'Approved'
     overtime_plan.status = "Approved"
     overtime_plan.save()
+    receivers = [overtime_plan.applicant]
+    create_notification("Overtime Plan Approved","Your overtime plan has been approved", receivers)
     return overtime_plan
 
 
-def cfo_reject_plan(overtime_plan):
+def ceo_reject_plan(overtime_plan):
     overtime_plan.cfo_approval = 'Rejected'
     overtime_plan.status = "Rejected"
     overtime_plan.save()
+    receivers = [overtime_plan.applicant]
+    create_notification("Overtime Plan Rejected", "Your overtime plan has been rejected", receivers)
     return overtime_plan
 
 
@@ -199,21 +204,15 @@ def hr_reject_plan(overtime_plan):
 def approve_overtime_plan_service(approver, overtime_plan):
     approved_overtime_plan = None
 
-    if approver.is_hr:
-        approved_overtime_plan = hr_approve_plan(overtime_plan)
-
-    if approver.is_cfo:
-        approved_overtime_plan = cfo_approve_plan(overtime_plan)
+    if approver.is_ceo:
+        approved_overtime_plan = ceo_approve_plan(overtime_plan)
 
     return approved_overtime_plan
 
 
 def reject_overtime_plan_service(rejecter, overtime_plan):
-    if rejecter.is_hr:
-        rejected_overtime_application = hr_reject_plan(overtime_plan)
-
-    elif rejecter.is_cfo:
-        rejected_overtime_application = cfo_reject_plan(overtime_plan)
+    if rejecter.is_ceo:
+        rejected_overtime_application = ceo_reject_plan(overtime_plan)
 
     else:
         rejected_overtime_application = None

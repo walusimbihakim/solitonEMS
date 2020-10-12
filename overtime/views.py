@@ -13,7 +13,8 @@ from overtime.models import OvertimeApplication, OvertimePlan, OvertimeSchedule
 from overtime.procedures import is_duration_valid
 from overtime.selectors import get_all_overtime_applications, get_pending_overtime_applications, \
     get_overtime_application, get_recent_overtime_applications, get_most_recent_overtime_plans, \
-    get_overtime_plan, get_overtime_schedules, get_pending_overtime_plans, get_supervisor_user
+    get_overtime_plan, get_overtime_schedules, get_pending_overtime_plans, get_supervisor_user, get_cfo_users, \
+    get_ceo_users
 from overtime.services import reject_overtime_application_service, approve_overtime_application_service, \
     update_overtime_application, reject_overtime_plan_service, approve_overtime_plan_service, \
     send_overtime_application_mail
@@ -163,6 +164,9 @@ def create_overtime_plan(request):
     overtime_plan = OvertimePlan.objects.create(
         applicant=hod
     )
+    receivers = get_ceo_users()
+    create_notification("Overtime Plan", f"{hod}'s overtime plan pending approval", receivers)
+
     return HttpResponseRedirect(reverse(create_overtime_plan_page))
 
 
