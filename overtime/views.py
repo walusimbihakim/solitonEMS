@@ -238,7 +238,7 @@ def approve_overtime_plan(request, overtime_plan_id):
     return HttpResponseRedirect(reverse(approve_overtime_plans_page))
 
 
-def delete_overtime_application(request,id):
+def delete_overtime_application(request, id):
     """Delete overtime application"""
     overtime_application = get_overtime_application(id)
     overtime_application.delete()

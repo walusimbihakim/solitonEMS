@@ -57,12 +57,10 @@ def leave_dashboard_page(request):
 
     elif user.is_hr:
         applications = LeaveApplication.objects \
-            .filter(hr_status="Pending", supervisor_status="Approved", \
-                    hod_status="Approved").order_by('apply_date')
+            .filter(hr_status="Pending", supervisor_status="Approved", hod_status="Approved").order_by('apply_date')
         role = "is_hr"
 
     leave_types = Leave_Types.objects.all()
-
     context = {
         "leave_dashboard_page": "active",
         "applications": applications,
