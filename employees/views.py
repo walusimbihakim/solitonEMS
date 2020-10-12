@@ -35,7 +35,8 @@ from settings.models import Currency
 import csv
 
 from notification.selectors import get_user_notifications
-from .selectors import get_employee, get_active_employees, get_passive_employees, get_employee_contacts, get_contact
+from .selectors import get_employee, get_active_employees, get_passive_employees, get_employee_contacts, get_contact, \
+    get_employee_deduction, get_employee_statutory_deduction
 from leave.selectors import get_leave_record, get_current_year
 
 
@@ -1371,6 +1372,36 @@ def employees_download(request):
                          employee.basic_salary, employee.grade, employee.gender, employee.start_date,
                          employee.marital_status, employee.dob, employee.nationality, employee.nssf_no,
                          employee.telephone_no, employee.residence_address, employee.national_id, employee.ura_tin])
+
+    # Return the response
+    return response
+
+
+@login_required
+def employees_financial_csv(request):
+    # Get all the associated Employee objects
+    employees = get_active_employees()
+    response = HttpResponse(content_type='text/csv')
+    # Name the csv file
+    filename = "employees_financial.csv"
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+    writer = csv.writer(response, delimiter=',')
+    # Writing the first row of the csv
+    heading_text = "Soliton Employees Financial Data"
+    writer.writerow([heading_text.upper()])
+    writer.writerow(
+        ['Employee ID', 'Name', 'Currency', 'Basic Salary', 'Bonus', 'Local Service Allowance', 'Meal Allowance',
+         'Sacco Deduction', 'Damage Deduction', 'Salary Advance', 'Police Fine', 'Local Service Tax'])
+
+    # Writing other rows
+    for employee in employees:
+        name = employee.first_name + " " + employee.last_name
+        employee_deduction = get_employee_deduction(employee)
+        employee_statutory_deduction = get_employee_statutory_deduction(employee)
+        writer.writerow([employee.id, name, employee.currency, employee.basic_salary, employee.bonus,
+                         employee.local_service_tax, employee.lunch_allowance, employee_deduction.sacco,
+                         employee_deduction.damage, employee_deduction.salary_advance,employee_deduction.police_fine,
+                         employee_statutory_deduction.local_service_tax, ])
 
     # Return the response
     return response
