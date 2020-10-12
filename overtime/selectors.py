@@ -146,12 +146,12 @@ def get_hr_pending_overtime_plans():
 
 
 def get_cfo_pending_overtime_plans():
-    pending_overtime_plans = OvertimePlan.objects.filter(status="Pending", cfo_approval="Pending",
-                                                         HR_approval="Approved").order_by("-id")
+    pending_overtime_plans = OvertimePlan.objects.filter(status="Pending", cfo_approval="Pending").order_by("-id")
     return pending_overtime_plans
 
 
 def get_pending_overtime_plans(approver):
+    """Get pending overtime plans for each user"""
     pending_overtime_plans = None
 
     if approver.is_hr:
