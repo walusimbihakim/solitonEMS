@@ -6,12 +6,11 @@ from settings.models import Currency
 # Create your models here.
 
 class Employee(models.Model):
-    objects = None
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     basic_salary = models.IntegerField(default=1000000)
-    bonus = models.IntegerField(default=0)
-    local_service_tax = models.IntegerField(default=0)
+    bonus = models.FloatField(default=0)
+    local_service_tax = models.FloatField(default=0)
     grade = models.CharField(max_length=3, default="")
     gender = models.CharField(max_length=10)
     start_date = models.DateField()
@@ -158,7 +157,7 @@ class Deduction(models.Model):
 
 class StatutoryDeduction(models.Model):
     employee = models.OneToOneField(Employee, on_delete=models.CASCADE)
-    local_service_tax = models.IntegerField(default=0)
+    local_service_tax = models.FloatField()
 
     def __str__(self):
         return f"Local service tax {self.local_service_tax}"
