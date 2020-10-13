@@ -1532,7 +1532,7 @@
                     <!--Body-->
                     <div class="modal-body">
                         {% if leave_record %}
-                        <form method="POST" action="{% url 'edit_leave_details' %}"> {%csrf_token%}
+                        <form method="POST" action="#"> {%csrf_token%}
                             <div class="form-group">
                                 <label>Entitlement: </label>
                                 <input type="text" class="form-control" placeholder="Entitlement" name="entitlement"
@@ -1568,7 +1568,7 @@
                             </div>
                         </form>
                         {% else%}
-                        <form method="POST" action="{% url 'edit_leave_details' %}"> {%csrf_token%}
+                        <form method="POST" action="#"> {%csrf_token%}
                             <div class="form-group">
                                 <input type="text" class="form-control" placeholder="Entitlement:" name="entitlement"
                                        required>
