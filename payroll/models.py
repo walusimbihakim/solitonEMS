@@ -57,3 +57,12 @@ class Payslip(models.Model):
         nssf = self.total_nssf_contrib
         currency = float(self.currency.cost)
         return nssf * currency
+
+
+class CSV(models.Model):
+    file_name = models.FileField(upload_to='media/csvs/')
+    uploaded = models.DateTimeField(auto_now_add=True)
+    activated = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"File ID: {self.id}"

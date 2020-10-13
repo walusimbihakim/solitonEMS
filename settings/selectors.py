@@ -16,6 +16,13 @@ def get_usd_currency():
         return None
 
 
+def get_currency_from_code(code):
+    try:
+        return Currency.objects.get(code=code)
+    except Currency.DoesNotExist:
+        return None
+
+
 def get_ugx_currency():
     try:
         return Currency.objects.get(code="UGX")

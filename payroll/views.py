@@ -16,8 +16,9 @@ from payroll.selectors import get_payroll_record_by_id, get_ugx_payslips, get_us
     get_payslips, get_unarchived_payroll_records
 from payroll.services import create_payslip_list_service
 from settings.selectors import get_usd_currency
+from .forms.csv_form import CSVForm
 
-from .models import PayrollRecord, Payslip
+from .models import PayrollRecord, Payslip, CSV
 from django.urls import reverse
 from .simple_payslip import SimplePayslip
 
@@ -39,9 +40,25 @@ def payroll_page(request):
 @hr_required
 @log_activity
 def review_financial_info_page(request):
+    csv_form = CSVForm()
+    if request.POST:
+        form = CSVForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            csv_obj = CSV.objects.get(activated=False)
+            csv_obj.activated = True
+            csv_obj.save()
+            create_item_and_location_objects(csv_obj)
+            create_order_objects(csv_obj)
+            csv_obj.delete()
+            messages.warning(request, "File uploaded successfully")
+            return HttpResponseRedirect(reverse(review_financial_info_page))
+        else:
+            messages.warning(request, "Form is not valid")
     context = {
         "payroll_page": "active",
-        "employees": get_active_employees()
+        "employees": get_active_employees(),
+        "csv_form": csv_form,
     }
     return render(request, 'payroll/review_and_edit_financial_info.html', context)
 

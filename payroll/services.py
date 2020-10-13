@@ -1,8 +1,11 @@
-from employees.models import Employee
-from employees.selectors import get_active_employees
+import csv
+
+from employees.models import Employee, StatutoryDeduction, Deduction
+from employees.selectors import get_active_employees, get_employee
 from payroll.simple_payslip import SimplePayslip
 from payroll.models import Payslip
 from payroll.procedures import get_overtime_pay
+from settings.selectors import get_currency, get_currency_from_code
 
 
 def create_payslip_list_service(payroll_record):
@@ -43,3 +46,44 @@ def create_payslip_service(employee: object, payroll_record: object, overtime_pa
     )
 
     return payslip
+
+
+def create_employee_financial_details(csv_obj):
+    with open(csv_obj.file_name.path, 'r') as f:
+        reader = csv.reader(f)
+        employees = []
+        statutory_deductions = []
+        non_statutory_deductions = []
+        for i, row in enumerate(reader):
+            if i < 3:  # Ignore first 2 rows
+                pass
+            else:
+                employee_id = row[0]
+                currency_code = row[2]
+                basic_salary = row[3]
+                bonus = row[4]
+                local_service_allowance = row[5]
+                meal_allowance = row[6]
+                sacco = row[7]
+                damage = row[8]
+                salary_advance = row[9]
+                police_fine = row[10]
+                local_service_tax = row[11]
+
+                employee = get_employee(employee_id)
+                statutory_deduction = get_statutory_deduction()
+                currency = get_currency_from_code(currency_code)
+                new_employee = Employee(id=employee_id, currency=currency, basic_salary=basic_salary, bonus=bonus,
+                                        local_service_tax=local_service_allowance,
+                                        lunch_allowance=meal_allowance)
+                employees.append(new_employee)
+                new_statutory_deduction = StatutoryDeduction(id="", employee=employee, local_service_tax=local_service_tax)
+                statutory_deductions.append(new_statutory_deduction)
+                non_statutory_deduction = Deduction(id="",employee=employee, sacco=sacco, damage=damage,
+                                                    salary_advance=salary_advance, police_fine=police_fine)
+                non_statutory_deductions.append(non_statutory_deduction)
+
+        Employee.objects.bulk_update(employees, ['currency', 'basic_salary', 'bonus', 'local_service_tax',
+                                                 'lunch_allowance'])
+
+        StatutoryDeduction.objects.bulk_update(statutory_deductions, ['employee'])
