@@ -4,7 +4,7 @@ from employees.models import Employee, Deduction, StatutoryDeduction
 
 def convert_to_zero_if_none(value):
     if value:
-        return int(value)
+        return value
     else:
         return 0
 

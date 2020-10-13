@@ -22,6 +22,23 @@ def send_leave_application_email(approvers, leave_application, domain=None):
     msg.send()
 
 
+def send_leave_plan_email(approvers, leave_plan, domain=None):
+    approver_emails = []
+    for approver in approvers:
+        approver_emails.append(approver.email)
+
+    context = {
+        'applicant_name': leave_plan.employee,
+        'server_url': domain
+    }
+
+    subject, from_mail, to = 'New Leave Plan', None, approver_emails
+    html_content = get_template('email/application_notification.html').render(context)
+    msg = EmailMultiAlternatives(subject, None, from_mail, to)
+    msg.attach_alternative(html_content, 'text/html')
+    msg.send()
+
+
 def send_leave_response_email(leave_application, approver, status, domain=None):
     applicant = leave_application.employee
     user = applicant.solitonuser.user
@@ -63,6 +80,3 @@ def get_number_of_days_without_public_holidays(start_date, end_date):
 
     no_of_days = all_days_between - public_days
     return no_of_days
-
-
-

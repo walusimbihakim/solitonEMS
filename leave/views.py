@@ -22,7 +22,7 @@ from leave.selectors import (
     get_employee_leave_applications,
     get_leave_record,
     get_recent_leave_plans, get_hod_pending_leave_plans, get_leave_plan, get_approved_leave_plans, get_current_year)
-from leave.services import send_leave_application_email, send_leave_response_email
+from leave.services import send_leave_application_email, send_leave_response_email, send_leave_plan_email
 from notification.services import create_notification
 from organisation_details.decorators import organisationdetail_required
 from organisation_details.models import (
@@ -57,12 +57,10 @@ def leave_dashboard_page(request):
 
     elif user.is_hr:
         applications = LeaveApplication.objects \
-            .filter(hr_status="Pending", supervisor_status="Approved", \
-                    hod_status="Approved").order_by('apply_date')
+            .filter(hr_status="Pending", supervisor_status="Approved", hod_status="Approved").order_by('apply_date')
         role = "is_hr"
 
     leave_types = Leave_Types.objects.all()
-
     context = {
         "leave_dashboard_page": "active",
         "applications": applications,
@@ -819,6 +817,9 @@ def create_leave_plan_page(request):
                 end_date=end_date,
                 description=description
             )
+            receivers = get_hod_users(employee)
+            create_notification("New Leave Plan", f"A leave plan from {employee} pending approval", receivers)
+            send_leave_plan_email(receivers, new_leave_plan, domain=None)
         except IntegrityError:
             return HttpResponseRedirect(reverse(create_leave_plan_page))
 
@@ -843,12 +844,14 @@ def approve_leave_plan_page(request):
     return render(request, "leave/approve_leave_plans.html", context)
 
 
+@hod_required
 @login_required
 @organisationdetail_required
 def approve_leave_plan(request, id):
     leave_plan = get_leave_plan(id=id)
     leave_plan.approval_status = "Approved"
     leave_plan.save()
+    create_notification("Leave Plan Approved", f"Your leave plan has been approved", [leave_plan.employee])
     messages.warning(request, f'Leave plan approved')
     return HttpResponseRedirect(reverse(approve_leave_plan_page))
 
@@ -859,6 +862,7 @@ def reject_leave_plan(request, id):
     leave_plan = get_leave_plan(id=id)
     leave_plan.approval_status = "Rejected"
     leave_plan.save()
+    create_notification("Leave Plan Rejected", f"Your leave plan has been rejected", [leave_plan.employee])
     messages.warning(request, f'Leave plan rejected')
     return HttpResponseRedirect(reverse(approve_leave_plan_page))
 
