@@ -13,8 +13,8 @@ from ems_admin.decorators import log_activity
 from ems_auth.decorators import hr_required
 from ems_auth.models import SolitonUser
 from payroll.selectors import get_payroll_record_by_id, get_ugx_payslips, get_usd_payslips, \
-    get_payslips, get_unarchived_payroll_records
-from payroll.services import create_payslip_list_service
+    get_payslips, get_unarchived_payroll_records, get_activated_csv
+from payroll.services import create_payslip_list_service, update_employee_financial_details, delete_all_csv_files
 from settings.selectors import get_usd_currency
 from .forms.csv_form import CSVForm
 
@@ -41,16 +41,17 @@ def payroll_page(request):
 @log_activity
 def review_financial_info_page(request):
     csv_form = CSVForm()
+    delete_all_csv_files()
     if request.POST:
         form = CSVForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            csv_obj = CSV.objects.get(activated=False)
-            csv_obj.activated = True
-            csv_obj.save()
-            create_item_and_location_objects(csv_obj)
-            create_order_objects(csv_obj)
-            csv_obj.delete()
+            csv_obj = form.save()
+            # Update the records
+            try:
+                update_employee_financial_details(csv_obj)
+            except (ValueError, IntegrityError):
+                messages.warning(request, "You entered invalid values. Please export csv template and try again")
+                return HttpResponseRedirect(reverse(review_financial_info_page))
             messages.warning(request, "File uploaded successfully")
             return HttpResponseRedirect(reverse(review_financial_info_page))
         else:
