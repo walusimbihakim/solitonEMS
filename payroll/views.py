@@ -13,11 +13,12 @@ from ems_admin.decorators import log_activity
 from ems_auth.decorators import hr_required
 from ems_auth.models import SolitonUser
 from payroll.selectors import get_payroll_record_by_id, get_ugx_payslips, get_usd_payslips, \
-    get_payslips, get_unarchived_payroll_records
-from payroll.services import create_payslip_list_service
+    get_payslips, get_unarchived_payroll_records, get_activated_csv
+from payroll.services import create_payslip_list_service, update_employee_financial_details, delete_all_csv_files
 from settings.selectors import get_usd_currency
+from .forms.csv_form import CSVForm
 
-from .models import PayrollRecord, Payslip
+from .models import PayrollRecord, Payslip, CSV
 from django.urls import reverse
 from .simple_payslip import SimplePayslip
 
@@ -39,9 +40,26 @@ def payroll_page(request):
 @hr_required
 @log_activity
 def review_financial_info_page(request):
+    csv_form = CSVForm()
+    delete_all_csv_files()
+    if request.POST:
+        form = CSVForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_obj = form.save()
+            # Update the records
+            try:
+                update_employee_financial_details(csv_obj)
+            except (ValueError, IntegrityError):
+                messages.warning(request, "You entered invalid values. Please export csv template and try again")
+                return HttpResponseRedirect(reverse(review_financial_info_page))
+            messages.warning(request, "File uploaded successfully")
+            return HttpResponseRedirect(reverse(review_financial_info_page))
+        else:
+            messages.warning(request, "Form is not valid")
     context = {
         "payroll_page": "active",
-        "employees": get_active_employees()
+        "employees": get_active_employees(),
+        "csv_form": csv_form,
     }
     return render(request, 'payroll/review_and_edit_financial_info.html', context)
 
