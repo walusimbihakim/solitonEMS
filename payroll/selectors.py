@@ -1,4 +1,6 @@
-from payroll.models import Payslip, PayrollRecord
+from django.core.exceptions import MultipleObjectsReturned
+
+from payroll.models import Payslip, PayrollRecord, CSV
 from settings.selectors import get_ugx_currency, get_usd_currency
 
 
@@ -32,3 +34,13 @@ def get_payroll_record(id):
 
 def get_payslips(payroll_record):
     return Payslip.objects.filter(payroll_record=payroll_record)
+
+
+def get_activated_csv(activated):
+    try:
+        csv = CSV.objects.get(activated=activated)
+
+    except MultipleObjectsReturned:
+        csv = CSV.objects.filter(activated=activated)[0]
+
+    return csv
