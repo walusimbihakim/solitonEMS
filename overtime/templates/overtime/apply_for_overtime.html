@@ -1,5 +1,6 @@
 {%extends 'solitonems/base.html'%}
 {% load humanize %}
+{%load custom_filter_tags%}
 {% load static %}
 {% block page_title %}
 Overtime Application
@@ -30,7 +31,9 @@ Overtime Application
                         <th>Date</th>
                         <th>Start time</th>
                         <th>End time</th>
+                        <th>Hours</th>
                         <th>Description</th>
+                        <th>Overtime Pay</th>
                         <th>Approval Status</th>
                         </thead>
                         {%for recent_application in recent_applications%}
@@ -39,7 +42,9 @@ Overtime Application
                             <td>{{recent_application.date}}</td>
                             <td>{{recent_application.start_time}}</td>
                             <td>{{recent_application.end_time}}</td>
+                            <td>{{recent_application.number_of_hours}}</td>
                             <td>{{recent_application.description}}</td>
+                            <td>{{recent_application.applicant.currency}} {{recent_application.overtime_pay | currency_filter}}</td>
                             <td>{{recent_application.status}}</td>
                         </tr>
                         {%endfor%}
