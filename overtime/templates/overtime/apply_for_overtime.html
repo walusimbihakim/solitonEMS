@@ -35,6 +35,7 @@ Overtime Application
                         <th>Description</th>
                         <th>Overtime Pay</th>
                         <th>Approval Status</th>
+                        <th>Actions</th>
                         </thead>
                         {%for recent_application in recent_applications%}
                         <tr>
@@ -46,6 +47,12 @@ Overtime Application
                             <td>{{recent_application.description}}</td>
                             <td>{{recent_application.applicant.currency}} {{recent_application.overtime_pay | currency_filter}}</td>
                             <td>{{recent_application.status}}</td>
+                            <td>
+                                <a href="#"  onclick="return confirm('Are you sure you want to revert
+                            overtime application ID {{recent_application.id}}?')">
+                                    <button class="btn btn-outline">Revert</button>
+                                </a>
+                            </td>
                         </tr>
                         {%endfor%}
                     </table>
