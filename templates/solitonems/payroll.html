@@ -112,20 +112,33 @@
         <tr>
             <td colspan="3">Total</td>
             <td>{{total_basic_pay| currency_filter}}</td>
+            <td>{{total_lst_allowance | currency_filter}}</td>
             <td>{{total_gross_pay| currency_filter}}</td>
             <td>{{total_nssf_contribution| currency_filter}}</td>
             <td>{{total_paye| currency_filter}}</td>
+            <td>{{total_lst_deduction | currency_filter}}</td>
             <td>{{total_sacco| currency_filter}}</td>
             <td>{{total_net_pay| currency_filter}}</td>
         </tr>
     </table>
     <small>Generated with Soliton Bakozi on {% now "jS F Y" %}</small>
-    <h2>Prepared by: Human Resource Manager</h2>
-    <p>................................................................</p>
-    <h2>Approved by: Chief Financial Officer</h2>
-    <p>................................................................</p>
-    <h2>Approved by: Chief Executive Officer</h2>
-    <p>................................................................</p>
+    <br/>
+    <table>
+        <tr>
+            <td>
+                <h2>Prepared by: Human Resource Manager</h2>
+                <p>................................................................</p>
+            </td>
+            <td>
+                <h2>Approved by: Chief Financial Officer</h2>
+                <p>................................................................</p>
+            </td>
+            <td>
+                <h2>Approved by: Chief Executive Officer</h2>
+                <p>................................................................</p>
+            </td>
+        </tr>
+    </table>
 </div>
 </div>
 </body>
