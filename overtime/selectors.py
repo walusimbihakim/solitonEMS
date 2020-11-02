@@ -213,7 +213,8 @@ def get_is_overtime_approver(approver_user: User) -> bool:
 
 def get_approved_overtime_applications_in_current_month(applicant: Employee):
     """Pick applicant's overtime applications for the current month that are approved"""
-    current_month = datetime.datetime.today().month
+    # current_month = datetime.datetime.today().month
+    current_month = 10
     overtime_applications = OvertimeApplication.objects.filter(date__month=current_month, applicant=applicant,
                                                                status="Approved")
     return overtime_applications
