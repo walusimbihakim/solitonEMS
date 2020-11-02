@@ -41,6 +41,20 @@ def get_total_sacco(payslips):
     return sacco
 
 
+def get_total_lst_deduction(payslips):
+    """Local service tax deduction"""
+    sum = payslips.aggregate(Sum('local_service_tax_deduction'))
+    total_lst_deduction = sum['local_service_tax_deduction__sum']
+    return total_lst_deduction
+
+
+def get_total_lst_allowance(payslips):
+    """Local service tax Allowance"""
+    sum = payslips.aggregate(Sum('local_service_tax'))
+    total_lst_allowance = sum['local_service_tax__sum']
+    return total_lst_allowance
+
+
 def get_total_gross_pay(payrolls):
     sum = payrolls.aggregate(Sum('gross_salary'))
     gross_salary = sum['gross_salary__sum']
