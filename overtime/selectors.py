@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
-import datetime
+
 from employees.models import Employee
 from organisation_details.selectors import get_team_instance, get_is_supervisor_in_team, \
     get_is_hod_in_department
 from overtime.models import OvertimeApplication, OvertimePlan, OvertimeSchedule
+from payroll.selectors import get_current_month
 
 User = get_user_model()
 
@@ -213,8 +214,7 @@ def get_is_overtime_approver(approver_user: User) -> bool:
 
 def get_approved_overtime_applications_in_current_month(applicant: Employee):
     """Pick applicant's overtime applications for the current month that are approved"""
-    # current_month = datetime.datetime.today().month
-    current_month = 10
+    current_month = get_current_month()
     overtime_applications = OvertimeApplication.objects.filter(date__month=current_month, applicant=applicant,
                                                                status="Approved")
     return overtime_applications
