@@ -1,5 +1,5 @@
 from django.core.exceptions import MultipleObjectsReturned
-
+import datetime
 from payroll.models import Payslip, PayrollRecord, CSV
 from settings.selectors import get_ugx_currency, get_usd_currency
 
@@ -44,3 +44,7 @@ def get_activated_csv(activated):
         csv = CSV.objects.filter(activated=activated)[0]
 
     return csv
+
+
+def get_current_month():
+    return datetime.datetime.today().month
