@@ -9,6 +9,8 @@ register = template.Library()
 @register.filter
 def currency_filter(value):
     """Outputs comma separated rounded off figure"""
+    if value is None:
+        return "0"
     number = float(value)
     rounded_number = round(number)
     integer_number = int(rounded_number)
