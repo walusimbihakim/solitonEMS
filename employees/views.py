@@ -375,7 +375,7 @@ def add_bank_details(request):
         bank_detail.save()
         context = {
             "employees_page": "active",
-            "success_msg": "You have successfully added %s Bank Details " % (employee.first_name),
+            "success_msg": "You have successfully added %s Bank Details " % employee.first_name,
             "employee": employee
         }
 

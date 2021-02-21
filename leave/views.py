@@ -22,7 +22,8 @@ from leave.selectors import (
     get_employee_leave_applications,
     get_leave_record,
     get_recent_leave_plans, get_hod_pending_leave_plans, get_leave_plan, get_approved_leave_plans, get_current_year)
-from leave.services import send_leave_application_email, send_leave_response_email, send_leave_plan_email
+from leave.services import send_leave_application_email, send_leave_response_email, send_leave_plan_email, \
+    get_number_of_days_without_public_holidays
 from notification.services import create_notification
 from organisation_details.decorators import organisationdetail_required
 from organisation_details.models import (
@@ -571,53 +572,35 @@ def generate_years():
 def get_end_date(request):
     if request.method == "GET":
         date_format = "%Y-%m-%d"
-
-        # Capturing values from the request
         start_date = request.GET["startDate"]
         days = request.GET["no_of_days"]
-
-        # Checking 7 days requirement
-        # today = date.today()
-        # apply_date = datetime(year=today.year, month=today.month, day=today.day)
-
-        # difference=get_public_days(apply_date,start_date)
-
-        # if difference<7:
-        #     # messages.warning(request, \
-        #         # 'leave application should be made 7 days before the leave start date')
-
-        #     return JsonResponse({'success': False,\
-        #         'message': 'leave application should be made 7 days before the leave start date'})
-
         if start_date and days:
             no_days = int(days)
-
             from_date = datetime.datetime.strptime(start_date, date_format)
-
-            # Getting all holiday objects
             holidays = Holiday.objects.all()
-
             k = 0
             public_days = 0
             while k < no_days:
                 check_date = from_date + datetime.timedelta(days=k)
-
                 is_holiday = holidays.filter(date=check_date.date()).exists()
-
                 if check_date.weekday() == 6 or is_holiday:
                     public_days += 1
-                    # continue
-
                 k += 1
-
             end_date = from_date + datetime.timedelta(days=(no_days + public_days) - 1)
-
             if end_date is None:
                 return JsonResponse({'success': False, 'message': 'No Date returned'})
 
             return JsonResponse({'success': True, 'end_date': end_date.date()})
         else:
             return JsonResponse({'success': False, 'message': "Start Date and/or Number of days Not Specified"})
+
+
+def get_number_of_days_between_two_dates(request):
+    date_format = "%Y-%m-%d"
+    start_date = datetime.datetime.strptime(request.GET["start_date"], date_format)
+    end_date = datetime.datetime.strptime(request.GET["end_date"], date_format)
+    number_of_days = get_number_of_days_without_public_holidays(start_date, end_date)
+    return JsonResponse({'success': True, 'number_of_days': number_of_days})
 
 
 def get_no_of_days(request):

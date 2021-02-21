@@ -27,8 +27,11 @@ urlpatterns = [
     path('approve_leave/', views.approve_leave, name="approve_leave"),
     path('reject_leave/<int:id', views.reject_leave, name="reject_leave"),
     path('get_end_date/', views.get_end_date, name="get_end_date"),
+    path('get_number_of_days_between_two_dates/', views.get_number_of_days_between_two_dates,
+         name="get_number_of_days_between_two_dates"),
     path('get_no_of_days/', views.get_no_of_days, name="get_no_of_days"),
-    path('leave_application_details/<int:id>/<str:role>/', views.leave_application_details, name="leave_application_details"),
+    path('leave_application_details/<int:id>/<str:role>/', views.leave_application_details,
+         name="leave_application_details"),
 
     path('annual_calendar/', views.Leave_planner_summary, name="annual_calendar"),
     path('leave_planner/', views.leave_planer, name="leave_planner"),
@@ -38,10 +41,12 @@ urlpatterns = [
 
 ]
 
+
 # JS routes
 def javascript_settings():
     js_conf = {
         'get_end_date': reverse('get_end_date'),
+        'get_number_of_days_between_two_dates': reverse('get_number_of_days_between_two_dates'),
         'get_no_of_days': reverse('get_no_of_days'),
         'approve_leave': reverse('approve_leave'),
         'reject_leave': reverse('reject_leave'),

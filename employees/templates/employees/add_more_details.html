@@ -196,16 +196,20 @@
                                         <td>{{employee.annual_allowance}}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Balance - {{2019}}</th>
-                                        <td>{{employee.leave_balance}}</td>
+                                        <th scope="row">Residue</th>
+                                        <td>{{leave_record.residue}}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Balance - {{2018}}</th>
-                                        <td>{{employee.balance_last_year}}</td>
+                                        <th scope="row">Leave Applied</th>
+                                        <td>{{leave_record.leave_applied}}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Leave Status</th>
-                                        <td>{{employee.leave_status}}</td>
+                                        <th scope="row">Total Taken</th>
+                                        <td>{{leave_record.total_taken}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Balance</th>
+                                        <td>{{leave_record.balance}}</td>
                                     </tr>
                                 </table>
                             </div>
