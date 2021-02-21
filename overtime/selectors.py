@@ -218,3 +218,9 @@ def get_approved_overtime_applications_in_current_month(applicant: Employee):
     overtime_applications = OvertimeApplication.objects.filter(date__month=current_month, applicant=applicant,
                                                                status="Approved")
     return overtime_applications
+
+
+def get_all_non_expired_overtime_applications():
+    # Only pending non expired applications can be expired
+    overtime_applications = OvertimeApplication.objects.filter(expired=False, status="Pending")
+    return overtime_applications

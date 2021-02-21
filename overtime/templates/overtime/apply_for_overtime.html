@@ -46,12 +46,22 @@ Overtime Application
                             <td>{{recent_application.number_of_hours}}</td>
                             <td>{{recent_application.description}}</td>
                             <td>{{recent_application.applicant.currency}} {{recent_application.overtime_pay | currency_filter}}</td>
-                            <td>{{recent_application.status}}</td>
+                            <td {% if recent_application.status == "Approved" %}
+                            style="color:green"
+                            {%elif recent_application.status == "Pending" %}
+                            style="color:black"
+                            {%else%}
+                            style="color:red"
+                            {%endif%}
+                            >{{recent_application.status}}</td>
                             <td>
-                                <a href="#"  onclick="return confirm('Are you sure you want to revert
-                            overtime application ID {{recent_application.id}}?')">
+                                {%if recent_application.status == "Pending"%}
+                                <a href="{%url 'revert_overtime_application' recent_application.id %}"  onclick="return confirm('Are you sure to revert overtime application?')">
                                     <button class="btn btn-outline">Revert</button>
                                 </a>
+                                {%else%}
+                                #
+                                {%endif%}
                             </td>
                         </tr>
                         {%endfor%}

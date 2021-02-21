@@ -9,8 +9,8 @@ sentry_sdk.init(
 
     # If you wish to associate users to errors (assuming you are using
     # django.contrib.auth) you may enable sending PII data.
-    
-send_default_pii=True
+
+    send_default_pii=True
 )
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -47,6 +47,7 @@ DJANGO_APPS = [
     'django.contrib.humanize',
     'javascript_settings',
     'crispy_forms',
+    'django_crontab'
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -64,7 +65,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'SOLITONEMS.urls'
-
 
 TEMPLATES = [
     {
@@ -133,7 +133,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR,'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
@@ -146,3 +146,7 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CRONJOBS = [
+    ('0 0 * * *', 'overtime.cron.expire_overtime_applications')  # Every day at Midnight
+]

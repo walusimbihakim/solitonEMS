@@ -8,6 +8,7 @@ from ems_admin.decorators import log_activity
 from ems_auth.decorators import ems_login_required, hod_required, hr_required
 from notification.services import create_notification
 from organisation_details.decorators import organisationdetail_required
+from overtime.cron import expire_overtime_applications
 
 from overtime.models import OvertimeApplication, OvertimePlan, OvertimeSchedule
 from overtime.procedures import is_duration_valid
@@ -246,4 +247,16 @@ def delete_overtime_application(request, id):
     """Delete overtime application"""
     overtime_application = get_overtime_application(id)
     overtime_application.delete()
+    return HttpResponseRedirect(reverse(overtime_applications_page))
+
+
+def revert_overtime_application(request, id):
+    """Delete overtime application"""
+    overtime_application = get_overtime_application(id)
+    overtime_application.delete()
+    return HttpResponseRedirect(reverse(apply_for_overtime_page))
+
+
+def test_expire_applications(request):
+    expire_overtime_applications()
     return HttpResponseRedirect(reverse(overtime_applications_page))

@@ -5,7 +5,14 @@ from overtime.procedures import get_overtime_application_hours
 
 
 class OvertimeApplication(models.Model):
-    status = models.CharField(max_length=10, default="Pending")
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Rejected', 'Rejected'),
+        ('Approved', 'Approved'),
+        ('Expired', 'Expired'),
+    ]
+
+    status = models.CharField(max_length=10, default="Pending", choices=STATUS_CHOICES)
     date = models.DateField(auto_now=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
@@ -15,6 +22,7 @@ class OvertimeApplication(models.Model):
     HR_approval = models.CharField(max_length=10, default="Pending")
     cfo_approval = models.CharField(max_length=10, default="Pending")
     ceo_approval = models.CharField(max_length=10, default="Pending")
+    expired = models.BooleanField(default=False)
     applicant = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='supervisor', blank=True)
 
     def __str__(self):
@@ -68,3 +76,10 @@ class OvertimeSchedule(models.Model):
     description = models.TextField()
 
 
+class TestCronJob(models.Model):
+    task = models.CharField(max_length=20)
+    description = models.TextField()
+    time = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.task}'
