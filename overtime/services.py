@@ -7,9 +7,7 @@ from django.core.mail import EmailMultiAlternatives
 from notification.services import create_notification
 from organisation_details.selectors import get_is_supervisor_in_team, get_is_hod_in_department
 from overtime.models import OvertimeApplication
-from overtime.selectors import get_hr_users, get_hod_users, get_cfo_users, get_ceo_users, \
-    get_ceo_pending_overtime_applications
-from SOLITONEMS.settings import BASE_DIR
+from overtime.selectors import get_hr_users, get_hod_users, get_cfo_users, get_ceo_users
 
 
 def approve_overtime_application_finally(id):

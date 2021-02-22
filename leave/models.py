@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 from employees.models import Employee
 from leave.services import get_number_of_days_without_public_holidays
 from organisation_details.models import Team, Department
@@ -19,7 +18,7 @@ class LeaveApplication(models.Model):
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     leave_type = models.ForeignKey(Leave_Types, on_delete=models.CASCADE)
-    apply_date = models.DateField(default=timezone.now)
+    apply_date = models.DateField(auto_now=True)
     start_date = models.DateField()
     end_date = models.DateField()
     no_of_days = models.IntegerField(default=1)
@@ -88,8 +87,9 @@ class LeavePlan(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
-    plan_date = models.DateField(default=timezone.now)
+    plan_date = models.DateField(auto_now=True)
     description = models.TextField(blank=True)
+    expired = models.BooleanField(default=False)
     approval_status = models.CharField(
         max_length=8,
         choices=APPROVAL_CHOICES,

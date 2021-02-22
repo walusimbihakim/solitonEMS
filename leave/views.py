@@ -802,7 +802,6 @@ def create_leave_plan_page(request):
             )
             receivers = get_hod_users(employee)
             create_notification("New Leave Plan", f"A leave plan from {employee} pending approval", receivers)
-            send_leave_plan_email(receivers, new_leave_plan, domain=None)
         except IntegrityError:
             return HttpResponseRedirect(reverse(create_leave_plan_page))
 

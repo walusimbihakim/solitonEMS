@@ -148,5 +148,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CRONJOBS = [
-    ('0 0 * * *', 'overtime.cron.expire_overtime_applications')  # Every day at Midnight
+    ('0 0 * * *', 'overtime.cron.expire_overtime_applications'),  # Every day at Midnight
+    ('0 0 * * *', 'leave.cron.expire_leave_plan_applications')  # Every day at Midnight
 ]
