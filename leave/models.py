@@ -37,6 +37,7 @@ class LeaveApplication(models.Model):
     overall_status = models.CharField(max_length=10, default="Pending")
     remarks = models.TextField(default="None")
     balance = models.IntegerField(default=0)
+    expired = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{id} - {self.leave_type} - {self.employee.first_name}"

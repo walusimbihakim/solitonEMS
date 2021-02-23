@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from employees.selectors import get_active_employees, get_employee
+from ems_admin.cron import delete_all_audit_trails
 from ems_admin.decorators import log_activity
 from ems_auth.decorators import ems_login_required, hod_required, hr_required
 from leave.cron import expire_leave_plan_applications
@@ -259,5 +260,5 @@ def revert_overtime_application(request, id):
 
 
 def test_expire_applications(request):
-    expire_leave_plan_applications()
+    delete_all_audit_trails()
     return HttpResponseRedirect(reverse(overtime_applications_page))

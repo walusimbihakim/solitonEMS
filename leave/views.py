@@ -244,7 +244,7 @@ def apply_leave(request):
                     leave_application.save()
 
                     approvers = get_hod_users(employee)
-                    send_leave_application_email(approvers, leave_application)
+                    # send_leave_application_email(approvers, leave_application)
 
                     create_notification("Leave", f"New Leave Request from {employee.first_name}", approvers)
 
@@ -266,7 +266,7 @@ def apply_leave(request):
                     leave_application.save()
 
                     approvers = get_hr_users()
-                    send_leave_application_email(approvers, leave_application)
+                    # send_leave_application_email(approvers, leave_application)
 
                     create_notification("Leave", f"New Leave Request from {employee.first_name}", approvers)
                 else:
@@ -283,7 +283,7 @@ def apply_leave(request):
 
                     leave_application.save()
                     approvers = get_supervisor_users(employee)
-                    send_leave_application_email(approvers, leave_application)
+                    # send_leave_application_email(approvers, leave_application)
                     create_notification("Leave", f"New Leave Request from {employee.first_name}", approvers)
                 messages.success(request, 'Leave Request Sent Successfully')
 
@@ -382,7 +382,7 @@ def approve_leave(request):
 
             hods = get_hod_users(employee)
 
-            send_leave_application_email(hods, leave_application)
+            # send_leave_application_email(hods, leave_application)
 
         elif user.is_hod:
             leave_application.hod = user.solitonuser.employee
@@ -392,7 +392,7 @@ def approve_leave(request):
 
             hrs = get_hr_users(employee)
 
-            send_leave_application_email(hrs, leave_application)
+            # send_leave_application_email(hrs, leave_application)
 
         elif user.is_hr:
             curr_balance = int(leave_record.balance)
@@ -508,8 +508,8 @@ def add_leave_records(request):
             for employee in employees:
                 employee_name = employee.id
 
-                leave_record = LeaveRecord(employee=employee, leave_year=yr, \
-                                           entitlement=21, residue=0, leave_applied=0, total_taken=0, \
+                leave_record = LeaveRecord(employee=employee, leave_year=yr,
+                                           entitlement=21, residue=0, leave_applied=0, total_taken=0,
                                            balance=21)
 
                 leave_record.save()

@@ -67,5 +67,10 @@ def get_all_recent_audit_trails():
     return audit_trails
 
 
+def get_all_audit_trails():
+    audit_trails = AuditTrail.objects.all()
+    return audit_trails
+
+
 def get_user_from_employee(employee):
     return employee.solitonuser.user

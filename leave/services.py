@@ -96,3 +96,19 @@ def expire_leave_plan_application(application, no_of_days: int) -> bool:
             return False
     else:
         return False
+
+
+def expire_leave_application(application) -> bool:
+    if not application.expired:
+        today = datetime.date.today()
+        # Application expiry date
+        expiry_date = application.start_date
+        if today == expiry_date or today > expiry_date:
+            application.expired = True
+            application.overall_status = "Expired"
+            application.save()
+            return True
+        else:
+            return False
+    else:
+        return False

@@ -2,7 +2,7 @@
 {% load static %}
 {% load javascript_settings_tags %}
 
-{% block page_title %}Leave Application{% endblock %}
+{% block page_title %}Apply for Leave{% endblock %}
 
 {%block content%}
 <div class="content">
@@ -42,6 +42,7 @@
                                 <th>Supervisor</th>
                                 <th>HOD</th>
                                 <th>HR</th>
+                                <th>Status</th>
                                 <th colspan="2">#</th>
                                 </thead>
                                 {% for leave_application in apps %}
@@ -76,6 +77,16 @@
                                         <i class="large material-icons">remove</i>
                                         {% endif%}
                                     </td>
+                                    <td>
+                                        {% if leave_application.overall_status == "Approved"%}
+                                        <span style="color:green">{{leave_application.overall_status}}</span>
+                                        {%elif leave_application.overall_status == "Expired"%}
+                                        <span style="color:red">{{leave_application.overall_status}}</span>
+                                        {%else%}
+                                         <span>{{leave_application.overall_status}}</span>
+                                        {%endif%}
+                                    </td>
+
                                     <td>
                                         <a href="{% url 'leave_application_details' leave_application.id role%}">
                                             <button class="btn btn-outline-success btn-rounded waves-effect">

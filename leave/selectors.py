@@ -123,3 +123,8 @@ def get_current_year():
 def get_all_non_expired_leave_plan_applications():
     leave_plan_applications = LeavePlan.objects.filter(expired=False, approval_status="Pending")
     return leave_plan_applications
+
+
+def get_all_non_expired_leave_applications():
+    leave_applications = LeaveApplication.objects.filter(expired=False, overall_status="Pending")
+    return leave_applications
