@@ -78,7 +78,6 @@ def add_leave_record(employee, start_date):
         residue=0,
         leave_applied=0,
         total_taken=0,
-        balance=leave_days
     )
 
     leave_record.save()
