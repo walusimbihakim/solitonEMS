@@ -2,7 +2,7 @@
 {% load static %}
 {% load javascript_settings_tags %}
 
-{% block page_title %}Leave Application{% endblock %}
+{% block page_title %}Apply for Leave{% endblock %}
 
 {%block content%}
 <div class="content">
@@ -33,60 +33,73 @@
                         </button>
 
                         <h3>Your Applications</h3>
-                        <table class="table">
-                            <thead>
-                            <th>Date</th>
-                            <th>Leave Type</th>
-                            <th>Duration</th>
-                            <th>Supervisor</th>
-                            <th>HOD</th>
-                            <th>HR</th>
-                            <th colspan="2">#</th>
-                            </thead>
-                            {% for leave_application in apps %}
-                            <tr>
-                                <td>{{leave_application.apply_date}}</td>
-                                <td>{{leave_application.leave_type}}</td>
-                                <td>{{leave_application.no_of_days}}</td>
-                                <td>
-                                    {% if leave_application.supervisor_status == "Approved"%}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <th>Date</th>
+                                <th>Leave Type</th>
+                                <th>Duration</th>
+                                <th>Supervisor</th>
+                                <th>HOD</th>
+                                <th>HR</th>
+                                <th>Status</th>
+                                <th colspan="2">#</th>
+                                </thead>
+                                {% for leave_application in apps %}
+                                <tr>
+                                    <td>{{leave_application.apply_date}}</td>
+                                    <td>{{leave_application.leave_type}}</td>
+                                    <td>{{leave_application.no_of_days}}</td>
+                                    <td>
+                                        {% if leave_application.supervisor_status == "Approved"%}
                                         <i class="large material-icons">check</i>
-                                    {% elif leave_application.supervisor_status == "Rejected"%}
-                                        <i class="large material-icons">clear</i>                                    
-                                    {% else%}
-                                        <i class="large material-icons">remove</i>
-                                    {% endif%}
-                                </td>
-                                <td>
-                                    {% if leave_application.hod_status == "Approved"%}
-                                        <i class="large material-icons">check</i>
-                                    {% elif leave_application.hod_status == "Rejected"%}
+                                        {% elif leave_application.supervisor_status == "Rejected"%}
                                         <i class="large material-icons">clear</i>
-                                    {% else%}
+                                        {% else%}
                                         <i class="large material-icons">remove</i>
-                                    {% endif%}
-                                </td>
-                                <td>
-                                    {% if leave_application.hr_status == "Approved"%}
+                                        {% endif%}
+                                    </td>
+                                    <td>
+                                        {% if leave_application.hod_status == "Approved"%}
                                         <i class="large material-icons">check</i>
-                                    {% elif leave_application.hr_status == "Rejected"%}
+                                        {% elif leave_application.hod_status == "Rejected"%}
                                         <i class="large material-icons">clear</i>
-                                    {% else%}
+                                        {% else%}
                                         <i class="large material-icons">remove</i>
-                                    {% endif%}
-                                </td>
-                                <td>
-                                    <a href="{% url 'leave_application_details' leave_application.id role%}">
-                                        <button class="btn btn-outline-success btn-rounded waves-effect">
-                                            View
-                                        </button>
-                                    </a>                                     
-                                </td>
-                            </tr>                           
-                        {% endfor %}
-                    </table>
-                {% endif %}
-            </div>
+                                        {% endif%}
+                                    </td>
+                                    <td>
+                                        {% if leave_application.hr_status == "Approved"%}
+                                        <i class="large material-icons">check</i>
+                                        {% elif leave_application.hr_status == "Rejected"%}
+                                        <i class="large material-icons">clear</i>
+                                        {% else%}
+                                        <i class="large material-icons">remove</i>
+                                        {% endif%}
+                                    </td>
+                                    <td>
+                                        {% if leave_application.overall_status == "Approved"%}
+                                        <span style="color:green">{{leave_application.overall_status}}</span>
+                                        {%elif leave_application.overall_status == "Expired"%}
+                                        <span style="color:red">{{leave_application.overall_status}}</span>
+                                        {%else%}
+                                         <span>{{leave_application.overall_status}}</span>
+                                        {%endif%}
+                                    </td>
+
+                                    <td>
+                                        <a href="{% url 'leave_application_details' leave_application.id role%}">
+                                            <button class="btn btn-outline-success btn-rounded waves-effect">
+                                                View
+                                            </button>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                        {% endif %}
+                    </div>
 
                 </div>
             </div>
@@ -113,31 +126,31 @@
                     <div class="form-group">
                         <label for="">Leave Type:</label>
                         <select class="form-control" name="ltype" id="leave_type" required>
-                             <option >== Select Leave Type ==</option>
+                            <option >== Select Leave Type ==</option>
                             {% for ty in l_types %}
-                                {% if ty.leave_type == ty %}
-                                    <option selected>{{ty.leave_type }}</option>
-                                {% else %}
-                                    <option value="{{ty.id }}">{{ty.leave_type }}</option>
-                                {% endif %}
+                            {% if ty.leave_type == ty %}
+                            <option selected>{{ty.leave_type }}</option>
+                            {% else %}
+                            <option value="{{ty.id }}">{{ty.leave_type }}</option>
+                            {% endif %}
                             {% endfor %}
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <input type="number" class="form-control" placeholder="No. of Days" 
-                        id = "no_days" name="no_days" readOnly>
+                        <input type="number" class="form-control" placeholder="No. of Days"
+                               id = "no_days" name="no_days" readOnly>
                     </div>
 
                     <div class="form-group">
                         <label for="start_date">Start Date</label>
-                        <input type="date" class="form-control" placeholder="From" name="s_date" 
-                        id="st_date" required >
+                        <input type="date" class="form-control" placeholder="From" name="s_date"
+                               id="st_date" required >
                     </div>
                     <div class="form-group">
                         <label for="end_date">End Date</label>
-                        <input type="date" class="form-control" placeholder="To" id="end_date" 
-                        name="e_date" required readOnly>
+                        <input type="date" class="form-control" placeholder="To" id="end_date"
+                               name="e_date" required readOnly>
                     </div>
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Additional Note"
@@ -157,6 +170,8 @@
         </div>
     </div>
 </div>
+{%endblock%}
+{%block custom_js%}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="{% static 'js/js.js' %}"></script>
 <script type="text/javascript">{% javascript_settings %}</script>

@@ -1,5 +1,17 @@
 import os
 from decouple import config, Csv
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+sentry_sdk.init(
+    dsn="https://a40c655bb4194addab3bdb81e598a700@o419692.ingest.sentry.io/5336359",
+    integrations=[DjangoIntegration()],
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+
+    send_default_pii=True
+)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -35,6 +47,7 @@ DJANGO_APPS = [
     'django.contrib.humanize',
     'javascript_settings',
     'crispy_forms',
+    'django_crontab'
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -52,7 +65,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'SOLITONEMS.urls'
-
 
 TEMPLATES = [
     {
@@ -121,15 +133,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/home/solitonug/solitonEMS/static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-EMAIL_HOST = config("EMAIL_HOST")
-EMAIL_HOST_USER = config("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = config("SENDGRID_API_KEY")
-FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
+SENDGRID_API_KEY = config('SENDGRID_API_KEY')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
-EMAIL_PORT = config("EMAIL_PORT")
-EMAIL_USE_TLS = config("EMAIL_USE_TLS")
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CRONJOBS = [
+    ('0 0 * * *', 'overtime.cron.expire_overtime_applications'),  # Every day at Midnight
+    ('0 0 * * *', 'leave.cron.expire_leave_plan_applications'),  # Every day at Midnight
+    ('0 0 * * *', 'leave.cron.expire_leave_applications'),  # Every 1 minute
+    ('0 3 * * 5', 'ems_admin.cron.delete_all_audit_trails'),  # Every 3 a.m on Friday
+]

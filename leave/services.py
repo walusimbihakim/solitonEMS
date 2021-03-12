@@ -80,3 +80,35 @@ def get_number_of_days_without_public_holidays(start_date, end_date):
 
     no_of_days = all_days_between - public_days
     return no_of_days
+
+
+def expire_leave_plan_application(application, no_of_days: int) -> bool:
+    if not application.expired:
+        today = datetime.date.today()
+        # Application expiry date
+        expiry_date = application.plan_date + datetime.timedelta(days=no_of_days)
+        if today == expiry_date or today > expiry_date:
+            application.expired = True
+            application.approval_status = "Expired"
+            application.save()
+            return True
+        else:
+            return False
+    else:
+        return False
+
+
+def expire_leave_application(application) -> bool:
+    if not application.expired:
+        today = datetime.date.today()
+        # Application expiry date
+        expiry_date = application.start_date
+        if today == expiry_date or today > expiry_date:
+            application.expired = True
+            application.overall_status = "Expired"
+            application.save()
+            return True
+        else:
+            return False
+    else:
+        return False

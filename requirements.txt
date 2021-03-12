@@ -1,10 +1,11 @@
-django
-gunicorn
-django-heroku
-xhtml2pdf
+django==3.1.5
+xhtml2pdf~=0.2.5
 python-decouple==3.1
 django-dajaxice
 django-dajax
 django-javascript-settings
-django-crispy-forms
+psycopg2-binary
+django-crispy-forms~=1.10.0
 
+
+celery~=5.0.5

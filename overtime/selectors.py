@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 
 from employees.models import Employee
+from ems_auth.models import SolitonUser
 from organisation_details.selectors import get_team_instance, get_is_supervisor_in_team, \
     get_is_hod_in_department
 from overtime.models import OvertimeApplication, OvertimePlan, OvertimeSchedule
@@ -217,4 +218,10 @@ def get_approved_overtime_applications_in_current_month(applicant: Employee):
     current_month = get_current_month()
     overtime_applications = OvertimeApplication.objects.filter(date__month=current_month, applicant=applicant,
                                                                status="Approved")
+    return overtime_applications
+
+
+def get_all_non_expired_overtime_applications():
+    # Only pending non expired applications can be expired
+    overtime_applications = OvertimeApplication.objects.filter(expired=False, status="Pending")
     return overtime_applications

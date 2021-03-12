@@ -57,13 +57,11 @@ def get_supervisor_users(applicant):
 
 def get_hod_users(applicant):
     department = applicant.department
-
     all_hod_users = user.objects.filter(is_hod=True)
     users = []
     for hod_user in all_hod_users:
         if hod_user.solitonuser.employee.department == department:
             users.append(hod_user)
-
     return users
 
 
@@ -118,3 +116,13 @@ def get_hod_approved_leave_plans(hod):
 
 def get_current_year():
     return datetime.datetime.now().year
+
+
+def get_all_non_expired_leave_plan_applications():
+    leave_plan_applications = LeavePlan.objects.filter(expired=False, approval_status="Pending")
+    return leave_plan_applications
+
+
+def get_all_non_expired_leave_applications():
+    leave_applications = LeaveApplication.objects.filter(expired=False, overall_status="Pending")
+    return leave_applications

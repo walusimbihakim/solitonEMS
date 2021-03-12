@@ -22,7 +22,8 @@ from leave.selectors import (
     get_employee_leave_applications,
     get_leave_record,
     get_recent_leave_plans, get_hod_pending_leave_plans, get_leave_plan, get_approved_leave_plans, get_current_year)
-from leave.services import send_leave_application_email, send_leave_response_email, send_leave_plan_email
+from leave.services import send_leave_application_email, send_leave_response_email, send_leave_plan_email, \
+    get_number_of_days_without_public_holidays
 from notification.services import create_notification
 from organisation_details.decorators import organisationdetail_required
 from organisation_details.models import (
@@ -40,30 +41,37 @@ from .models import (
 @login_required
 @organisationdetail_required
 def leave_dashboard_page(request):
-    applications, role = "", ""
+    role = ""
     user = request.user
-
+    is_applications_available = False
+    supervisor_applications, hod_applications, hr_applications = [], [], []
     if user.is_supervisor:
-        applications = LeaveApplication.objects.filter(supervisor_status="Pending",
-                                                       team=user.solitonuser.employee.organisationdetail.team)
+        supervisor_applications = LeaveApplication.objects.filter(supervisor_status="Pending",
+                                                                  team=user.solitonuser.employee.organisationdetail.team)
         role = "is_supervisor"
-
-    elif user.is_hod:
-        applications = LeaveApplication.objects.filter(hod_status="Pending",
-                                                       supervisor_status="Approved",
-                                                       department=user.solitonuser.employee.organisationdetail.department) \
+        if supervisor_applications:
+            is_applications_available = True
+    if user.is_hod:
+        hod_applications = LeaveApplication.objects.filter(hod_status="Pending",
+                                                           supervisor_status="Approved",
+                                                           department=user.solitonuser.employee.organisationdetail.department) \
             .order_by('apply_date')
+        if hod_applications:
+            is_applications_available = True
         role = "is_hod"
-
-    elif user.is_hr:
-        applications = LeaveApplication.objects \
+    if user.is_hr:
+        hr_applications = LeaveApplication.objects \
             .filter(hr_status="Pending", supervisor_status="Approved", hod_status="Approved").order_by('apply_date')
         role = "is_hr"
+        if hr_applications:
+            is_applications_available = True
 
-    leave_types = Leave_Types.objects.all()
     context = {
         "leave_dashboard_page": "active",
-        "applications": applications,
+        "supervisor_applications": supervisor_applications,
+        "hod_applications": hod_applications,
+        "hr_applications": hr_applications,
+        "is_applications_available": is_applications_available,
         "role": role
     }
     return render(request, 'leave/dashboard.html', context)
@@ -154,14 +162,8 @@ def edit_leave_type(request, id):
 @login_required
 def delete_leave_type(request, id):
     leave = Leave_Types.objects.get(pk=id)
-
     leave.delete()
     messages.success(request, "Leave Type Deleted")
-
-    context = {
-        "leave_page": "active",
-        "leave": leave
-    }
     return redirect('leave_types_page')
 
 
@@ -201,7 +203,6 @@ def no_leave_record_page(request):
 @login_required
 def apply_leave(request):
     if request.method == "POST":
-
         user = request.user
         employee = user.solitonuser.employee
         organisationdetail = get_organisationdetail(user)
@@ -210,21 +211,16 @@ def apply_leave(request):
         current_year = get_current_year()
         leave_record = get_leave_record(employee, current_year)
         leave_type = get_leave_type(request.POST["ltype"])
-
         start_date = request.POST["s_date"]
         end_date = request.POST["e_date"]
-
         days_applied = int(request.POST["no_days"])
         leave_type_days = leave_type.leave_days
-
         curr_balance = 0
-
         if days_applied <= leave_type_days:
             new_balance = 0
             if leave_type.leave_type == "Annual":
                 curr_balance = leave_record.balance
                 new_balance = curr_balance - days_applied
-
             if new_balance >= 0:
                 if user.is_supervisor:
                     leave_application = LeaveApplication(
@@ -239,14 +235,10 @@ def apply_leave(request):
                         supervisor=employee,
                         supervisor_status="Approved",
                     )
-
                     leave_application.save()
-
                     approvers = get_hod_users(employee)
-                    send_leave_application_email(approvers, leave_application)
-
+                    # send_leave_application_email(approvers, leave_application)
                     create_notification("Leave", f"New Leave Request from {employee.first_name}", approvers)
-
                 elif user.is_hod:
                     leave_application = LeaveApplication(
                         employee=employee,
@@ -263,9 +255,8 @@ def apply_leave(request):
                     )
 
                     leave_application.save()
-
                     approvers = get_hr_users()
-                    send_leave_application_email(approvers, leave_application)
+                    # send_leave_application_email(approvers, leave_application)
 
                     create_notification("Leave", f"New Leave Request from {employee.first_name}", approvers)
                 else:
@@ -279,10 +270,9 @@ def apply_leave(request):
                         department=department,
                         team=team
                     )
-
                     leave_application.save()
                     approvers = get_supervisor_users(employee)
-                    send_leave_application_email(approvers, leave_application)
+                    # send_leave_application_email(approvers, leave_application)
                     create_notification("Leave", f"New Leave Request from {employee.first_name}", approvers)
                 messages.success(request, 'Leave Request Sent Successfully')
 
@@ -362,48 +352,30 @@ def approve_leave(request):
     if request.method == "POST":
         user = request.user
         application_id = request.POST.get("application_id")
-        comment = request.POST.get("comment")
-
         leave_application = LeaveApplication.objects.get(pk=application_id)
-
         employee = leave_application.employee
         l_type = leave_application.leave_type
         n_days = leave_application.no_of_days
-
         leave_record = LeaveRecord.objects. \
             get(employee=employee, leave_year=datetime.date.today().year)
-
         if user.is_supervisor:
             leave_application.supervisor = user.solitonuser.employee
             leave_application.supervisor_status = "Approved"
             leave_application.supervisor_comment = request.POST.get("comment")
             leave_application.save()
-
-            hods = get_hod_users(employee)
-
-            send_leave_application_email(hods, leave_application)
-
-        elif user.is_hod:
+        if user.is_hod:
             leave_application.hod = user.solitonuser.employee
             leave_application.hod_status = "Approved"
             leave_application.hod_comment = request.POST.get("comment")
             leave_application.save()
-
-            hrs = get_hr_users(employee)
-
-            send_leave_application_email(hrs, leave_application)
-
-        elif user.is_hr:
+        if user.is_hr:
             curr_balance = int(leave_record.balance)
             total_applied = int(leave_record.leave_applied)
             total_taken = int(leave_record.total_taken)
-
             if l_type.leave_type == "Annual":
                 new_balance = int(curr_balance) - int(n_days)
-
                 total_applied += 1
                 total_taken += int(n_days)
-
             else:
                 new_balance = curr_balance
 
@@ -412,23 +384,18 @@ def approve_leave(request):
             leave_application.hr_comment = request.POST.get("comment")
             leave_application.balance = new_balance
             leave_application.overall_status = "Approved"
-
             leave_application.save()
 
             LeaveRecord.objects.filter(
                 employee=employee,
-                leave_year=datetime.date.today().year).update(
+                leave_year=datetime.date.today().year) \
+                .update(
                 leave_applied=total_applied,
-                total_taken=total_taken,
-                balance=new_balance
+                total_taken=total_taken
             )
-
-            send_leave_response_email(leave_application)
-
         else:
             messages.warning(request, 'Leave Approval Failed')
             return JsonResponse({'success': True, 'redirect': "leave_dashboard_page"})
-
         messages.success(request, 'Leave Approved Successfully')
         return JsonResponse({'success': True, 'redirect': "leave_dashboard_page"})
 
@@ -507,8 +474,8 @@ def add_leave_records(request):
             for employee in employees:
                 employee_name = employee.id
 
-                leave_record = LeaveRecord(employee=employee, leave_year=yr, \
-                                           entitlement=21, residue=0, leave_applied=0, total_taken=0, \
+                leave_record = LeaveRecord(employee=employee, leave_year=yr,
+                                           entitlement=21, residue=0, leave_applied=0, total_taken=0,
                                            balance=21)
 
                 leave_record.save()
@@ -571,53 +538,35 @@ def generate_years():
 def get_end_date(request):
     if request.method == "GET":
         date_format = "%Y-%m-%d"
-
-        # Capturing values from the request
         start_date = request.GET["startDate"]
         days = request.GET["no_of_days"]
-
-        # Checking 7 days requirement
-        # today = date.today()
-        # apply_date = datetime(year=today.year, month=today.month, day=today.day)
-
-        # difference=get_public_days(apply_date,start_date)
-
-        # if difference<7:
-        #     # messages.warning(request, \
-        #         # 'leave application should be made 7 days before the leave start date')
-
-        #     return JsonResponse({'success': False,\
-        #         'message': 'leave application should be made 7 days before the leave start date'})
-
         if start_date and days:
             no_days = int(days)
-
             from_date = datetime.datetime.strptime(start_date, date_format)
-
-            # Getting all holiday objects
             holidays = Holiday.objects.all()
-
             k = 0
             public_days = 0
             while k < no_days:
                 check_date = from_date + datetime.timedelta(days=k)
-
                 is_holiday = holidays.filter(date=check_date.date()).exists()
-
                 if check_date.weekday() == 6 or is_holiday:
                     public_days += 1
-                    # continue
-
                 k += 1
-
             end_date = from_date + datetime.timedelta(days=(no_days + public_days) - 1)
-
             if end_date is None:
                 return JsonResponse({'success': False, 'message': 'No Date returned'})
 
             return JsonResponse({'success': True, 'end_date': end_date.date()})
         else:
             return JsonResponse({'success': False, 'message': "Start Date and/or Number of days Not Specified"})
+
+
+def get_number_of_days_between_two_dates(request):
+    date_format = "%Y-%m-%d"
+    start_date = datetime.datetime.strptime(request.GET["start_date"], date_format)
+    end_date = datetime.datetime.strptime(request.GET["end_date"], date_format)
+    number_of_days = get_number_of_days_without_public_holidays(start_date, end_date)
+    return JsonResponse({'success': True, 'number_of_days': number_of_days})
 
 
 def get_no_of_days(request):
@@ -819,7 +768,6 @@ def create_leave_plan_page(request):
             )
             receivers = get_hod_users(employee)
             create_notification("New Leave Plan", f"A leave plan from {employee} pending approval", receivers)
-            send_leave_plan_email(receivers, new_leave_plan, domain=None)
         except IntegrityError:
             return HttpResponseRedirect(reverse(create_leave_plan_page))
 

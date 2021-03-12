@@ -1,3 +1,5 @@
+from datetime import timedelta, date
+
 from django.template.loader import get_template
 
 from django.core.mail import EmailMultiAlternatives
@@ -5,9 +7,7 @@ from django.core.mail import EmailMultiAlternatives
 from notification.services import create_notification
 from organisation_details.selectors import get_is_supervisor_in_team, get_is_hod_in_department
 from overtime.models import OvertimeApplication
-from overtime.selectors import get_hr_users, get_hod_users, get_cfo_users, get_ceo_users, \
-    get_ceo_pending_overtime_applications
-from SOLITONEMS.settings import BASE_DIR
+from overtime.selectors import get_hr_users, get_hod_users, get_cfo_users, get_ceo_users
 
 
 def approve_overtime_application_finally(id):
@@ -116,7 +116,7 @@ def amend_overtime_service(request):
 def reject_overtime_application_service(rejecter, overtime_application):
     is_supervisor = get_is_supervisor_in_team(rejecter)
     is_hod = get_is_hod_in_department(rejecter)
-    
+
     if is_supervisor:
         rejected_overtime_application = supervisor_reject(overtime_application)
 
@@ -175,7 +175,7 @@ def ceo_approve_plan(overtime_plan):
     overtime_plan.status = "Approved"
     overtime_plan.save()
     receivers = [overtime_plan.applicant]
-    create_notification("Overtime Plan Approved","Your overtime plan has been approved", receivers)
+    create_notification("Overtime Plan Approved", "Your overtime plan has been approved", receivers)
     return overtime_plan
 
 
@@ -252,3 +252,19 @@ def send_overtime_application_approval_mail(overtime_application, domain=None):
     msg = EmailMultiAlternatives(subject, None, from_email, [to])
     msg.attach_alternative(html_content, "text/html")
     msg.send()
+
+
+def expire_overtime_application(application: OvertimeApplication, no_of_days: int) -> bool:
+    if not application.expired:
+        today = date.today()
+        # Application expiry date
+        expiry_date = application.date + timedelta(days=no_of_days)
+        if today == expiry_date or today > expiry_date:
+            application.expired = True
+            application.status = "Expired"
+            application.save()
+            return True
+        else:
+            return False
+    else:
+        return False

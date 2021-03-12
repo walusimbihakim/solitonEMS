@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 from employees.models import Employee
 from leave.services import get_number_of_days_without_public_holidays
 from organisation_details.models import Team, Department
@@ -19,7 +18,7 @@ class LeaveApplication(models.Model):
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     leave_type = models.ForeignKey(Leave_Types, on_delete=models.CASCADE)
-    apply_date = models.DateField(default=timezone.now)
+    apply_date = models.DateField(auto_now=True)
     start_date = models.DateField()
     end_date = models.DateField()
     no_of_days = models.IntegerField(default=1)
@@ -27,20 +26,21 @@ class LeaveApplication(models.Model):
                                    related_name="Supervisor", blank=True, null=True)
     supervisor_status = models.CharField(max_length=15, default="Pending")
     supervisor_comment = models.TextField(blank=True, null=True, default="None")
-    hod = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="hod", \
+    hod = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="hod",
                             blank=True, null=True)
     hod_status = models.CharField(max_length=15, default="Pending")
     hod_comment = models.TextField(blank=True, null=True, default="None")
-    hr = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="hr", \
+    hr = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="hr",
                            blank=True, null=True)
     hr_status = models.CharField(max_length=15, default="Pending")
     hr_comment = models.TextField(blank=True, null=True, default="None")
     overall_status = models.CharField(max_length=10, default="Pending")
     remarks = models.TextField(default="None")
     balance = models.IntegerField(default=0)
+    expired = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{id} - {self.leave_type} - {employee.first_name}"
+        return f"{id} - {self.leave_type} - {self.employee.first_name}"
 
 
 class LeaveRecord(models.Model):
@@ -50,13 +50,16 @@ class LeaveRecord(models.Model):
     residue = models.IntegerField(default=0)
     leave_applied = models.IntegerField(default=0)
     total_taken = models.IntegerField(default=0)
-    balance = models.IntegerField(default=0)
 
     class Meta:
         unique_together = ("employee", "leave_year")
 
     def __str__(self):
         return f"Leave Record {self.leave_year}"
+
+    @property
+    def balance(self):
+        return (self.entitlement + self.residue) - self.total_taken
 
 
 class annual_planner(models.Model):
@@ -74,17 +77,20 @@ class LeavePlan(models.Model):
     PENDING = 'Pending'
     APPROVED = 'Approved'
     REJECTED = 'Rejected'
+    EXPIRED = 'Expired'
 
     APPROVAL_CHOICES = [
         (PENDING, 'Pending'),
         (APPROVED, 'Approved'),
         (REJECTED, 'Rejected'),
+        (EXPIRED, 'Expired')
     ]
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
-    plan_date = models.DateField(default=timezone.now)
+    plan_date = models.DateField(auto_now=True)
     description = models.TextField(blank=True)
+    expired = models.BooleanField(default=False)
     approval_status = models.CharField(
         max_length=8,
         choices=APPROVAL_CHOICES,
