@@ -57,13 +57,11 @@ def get_supervisor_users(applicant):
 
 def get_hod_users(applicant):
     department = applicant.department
-
     all_hod_users = user.objects.filter(is_hod=True)
     users = []
     for hod_user in all_hod_users:
         if hod_user.solitonuser.employee.department == department:
             users.append(hod_user)
-
     return users
 
 
