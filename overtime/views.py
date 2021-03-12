@@ -52,10 +52,12 @@ def apply_for_overtime_page(request):
         if not is_duration_valid(start_time, end_time):
             messages.error(request, "Duration for the overtime application is not valid")
             return HttpResponseRedirect(reverse("apply_for_overtime_page"))
+        else:
             try:
                 approver = get_supervisor_user(applicant)
             except SolitonUser.DoesNotExist:
-                approver = None
+                messages.error(request, "You don't have a valid supervisor")
+                return HttpResponseRedirect(reverse("apply_for_overtime_page"))
 
             overtime_application = OvertimeApplication.objects.create(
                 start_time=start_time,
@@ -63,13 +65,9 @@ def apply_for_overtime_page(request):
                 description=description,
                 applicant=applicant
             )
-
             message = "You need to approve/reject overtime application from {}".format(applicant)
             create_notification("Overtime", message, [approver])
-            # send_overtime_application_mail([approver], overtime_application) It delays to send
             messages.success(request, "You have successfully submitted your overtime application")
-
-            messages.error(request, "You don't have a valid supervisor")
         return HttpResponseRedirect(reverse('apply_for_overtime_page'))
 
     recent_applications = get_recent_overtime_applications(limit=5, applicant=applicant)
