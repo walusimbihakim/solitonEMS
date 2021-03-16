@@ -241,14 +241,10 @@ def add_new_employee(request):
 @log_activity
 def delete_employee(request, id):
     try:
-        # Grab the employee
         employee = Employee.objects.get(pk=id)
-
         name = employee.first_name + " " + employee.last_name
-        # Delete the employee
         employee_to_delete = employee
         employee_to_delete.delete()
-
     except Employee.DoesNotExist:
         context = {
             "employees_page": "active",
@@ -1412,7 +1408,6 @@ def suspend_employee(request, employee_id):
     employee = get_employee(employee_id)
     suspend(employee)
     return HttpResponseRedirect(reverse('employees_page'))
-
 
 def employee_profile_page(request, employee_id):
     employee = get_employee(employee_id)

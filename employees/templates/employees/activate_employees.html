@@ -34,6 +34,9 @@ Activate Passive Employees
                                     <td>
                                         <a href="{% url 'activate_employee' employee.id %}" style="color:inherit">
                                             <button>Activate</button>
+                                        </a> |
+                                          <a href="{%url 'delete_employee' employee.id%}" onclick="return confirm('Are you sure you want to delete {{employee}}');" style="color:red">
+                                            <button>Delete</button>
                                         </a>
                                     </td>
                                 </tr>
